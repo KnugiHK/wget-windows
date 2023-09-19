@@ -347,9 +347,9 @@ fi
 # build zlib
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libz.a ]; then
-  wget -nc https://github.com/madler/zlib/releases/download/v1.2.13/zlib-1.2.13.tar.gz
-  tar -xf zlib-1.2.13.tar.gz
-  cd zlib-1.2.13 || exit
+  wget -nc https://github.com/madler/zlib/releases/download/v1.3/zlib-1.3.tar.gz
+  tar -xf zlib-1.3.tar.gz
+  cd zlib-1.3 || exit
   CC=$WGET_GCC ./configure --64 --static --prefix="$INSTALL_PATH"
   (($? != 0)) && { printf '%s\n' "[zlib] configure failed"; exit 1; }
   make
