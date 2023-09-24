@@ -12,6 +12,11 @@ export WGET_GCC=x86_64-w64-mingw32-gcc
 export WGET_MINGW_HOST=x86_64-w64-mingw32
 export WGET_ARCH=x86-64
 export MINGW_STRIP_TOOL=x86_64-w64-mingw32-strip
+while [[ "$(cat /proc/sys/fs/binfmt_misc/status)" == "enabled" ]]
+do
+  echo "The build script requires a password to work."
+  sudo bash -c "echo 0 > /proc/sys/fs/binfmt_misc/status"
+done
 # -----------------------------------------------------------------------------
 # build gmp
 # -----------------------------------------------------------------------------
