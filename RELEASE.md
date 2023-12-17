@@ -9,7 +9,7 @@
 | libtasn1      | 4.19.0               | n/a                   |
 | libidn2       | 2.3.0                | 2.3.0                 |
 | libunistring  | 1.1                  | 1.1                   |
-| cares         | 1.19.1               | 1.19.1                |
+| cares         | 1.23.0               | 1.23.0                |
 | libpsl        | 0.21.1               | 0.21.1                |
 | libiconv      | 1.17                 | 1.17                  |
 | pcre2         | 10.41                | 10.41                 |
