@@ -221,9 +221,9 @@ fi
 # build pcre2
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libpcre2-8.a ]; then
-  wget -nc https://github.com/PCRE2Project/pcre2/releases/download/pcre2-10.41/pcre2-10.41.tar.gz
-  tar -xf pcre2-10.41.tar.gz
-  cd pcre2-10.41 || exit
+  wget -nc https://github.com/PCRE2Project/pcre2/releases/download/pcre2-10.43/pcre2-10.43.tar.gz
+  tar -xf pcre2-10.43.tar.gz
+  cd pcre2-10.43 || exit
   ./configure \
   --host=$WGET_MINGW_HOST \
   --disable-shared \
