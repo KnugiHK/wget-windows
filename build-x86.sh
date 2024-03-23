@@ -153,9 +153,9 @@ fi
 # build cares
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libcares.a ]; then
-  wget -nc https://github.com/c-ares/c-ares/releases/download/cares-1_23_0/c-ares-1.23.0.tar.gz
-  tar -xf c-ares-1.23.0.tar.gz
-  cd c-ares-1.23.0 || exit
+  wget -nc https://github.com/c-ares/c-ares/releases/download/cares-1_27_0/c-ares-1.27.0.tar.gz
+  tar -xf c-ares-1.27.0.tar.gz
+  cd c-ares-1.27.0 || exit
   CPPFLAGS="-DCARES_STATICLIB=1" \
   ./configure \
   --host=$WGET_MINGW_HOST \
