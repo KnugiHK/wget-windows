@@ -10,7 +10,7 @@ jobs:
     name: ubuntu
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         name: Checkout project
       - name: Install prerequisites
         run: |
@@ -25,22 +25,22 @@ jobs:
           i686-w64-mingw32-gcc --version
           ./build-x86.sh
       - name: Archive gnutls
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v4
         with:
           name: wget-1.21.4-64bit-GnuTLS
           path: build-wget-webfolder.io/install/wget-gnutls/wget-gnutls-x64.exe
       - name: Archive openssl
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v4
         with:
           name: wget-1.21.4-64bit-OpenSSL
           path: build-wget-webfolder.io/install/wget-openssl/wget-openssl-x64.exe
       - name: Archive gnutls (x86)
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v4
         with:
           name: wget-1.21.4-32bit-GnuTLS
           path: build-wget-webfolder-x86.io/install/wget-gnutls/wget-gnutls-x86.exe
       - name: Archive openssl (x86)
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v4
         with:
           name: wget-1.21.4-32bit-OpenSSL
           path: build-wget-webfolder-x86.io/install/wget-openssl/wget-openssl-x86.exe
@@ -49,4 +49,4 @@ jobs:
           allowUpdates: true
           artifacts: "build-wget-webfolder.io/install/wget-gnutls/wget-gnutls-x64.exe,build-wget-webfolder.io/install/wget-openssl/wget-openssl-x64.exe,build-wget-webfolder-x86.io/install/wget-openssl/wget-openssl-x86.exe"
           bodyFile: "RELEASE.md"
-          token: ${{ secrets.TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
