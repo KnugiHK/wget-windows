@@ -6,6 +6,8 @@ GNU Wget is a free software package that allows users to retrieve files through 
 including HTTP, HTTPS, FTP, and FTPS. As a non-interactive command-line tool,
 it can be easily integrated into scripts, cron jobs, and terminals.
 
+This project was originally created by @webfolderio. Since the original repository appears to be getting reverted or removed, this repository serves as standalone backup for preservation.
+
 ## How to use wget
 
 To learn how to use Wget, please refer to the official GNU Wget manual by clicking the link below.
@@ -43,7 +45,3 @@ git clone https://github.com/webfolderio/wget-windows.git
 cd wget-windows
 ./build.sh
 ```
-
-### Notes
-
-This project was originally created by @webfolderio. Since the original repository appears to be getting reverted or removed, this repository serves as standalone backup for preservation.
