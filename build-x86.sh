@@ -80,9 +80,9 @@ fi
 # build idn2
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libidn2.a ]; then
-  wget -nc https://ftp.gnu.org/gnu/libidn/libidn2-2.3.0.tar.gz
-  tar -xf libidn2-2.3.0.tar.gz
-  cd libidn2-2.3.0 || exit
+  wget -nc https://ftp.gnu.org/gnu/libidn/libidn2-2.3.8.tar.gz
+  tar -xf libidn2-2.3.8.tar.gz
+  cd libidn2-2.3.8 || exit
   ./configure \
   --host=$WGET_MINGW_HOST \
   --disable-shared \
@@ -301,6 +301,7 @@ fi
 wget -nc https://ftp.gnu.org/gnu/wget/wget-1.24.5.tar.gz
 tar -xf wget-1.24.5.tar.gz
 cd wget-1.24.5 || exit
+make clean
 CFLAGS="-I$INSTALL_PATH/include -D_WIN32_WINNT=0x601 -DGNUTLS_INTERNAL_BUILD=1 -DCARES_STATICLIB=1 -DPCRE2_STATIC=1 -DNDEBUG -O2 -march=$WGET_ARCH -mtune=generic -Derror=rpl_error" \
  LDFLAGS="-L$INSTALL_PATH/lib -static -static-libgcc" \
  GNUTLS_CFLAGS=$CFLAGS \
@@ -323,9 +324,9 @@ CFLAGS="-I$INSTALL_PATH/include -D_WIN32_WINNT=0x601 -DGNUTLS_INTERNAL_BUILD=1 -
  --with-included-libunistring \
  --with-libidn \
  --with-cares \
- --with-libpsl
+ --with-libpsl \
+  ac_cv_func_fcntl=no
 (($? != 0)) && { printf '%s\n' "[wget gnutls] configure failed"; exit 1; }
-make clean
 make -j $CORE
 (($? != 0)) && { printf '%s\n' "[wget gnutls] make failed"; exit 1; }
 make install
@@ -362,7 +363,8 @@ CFLAGS="-I$INSTALL_PATH/include -D_WIN32_WINNT=0x601 -DCARES_STATICLIB=1 -DPCRE2
  --with-libidn \
  --with-cares \
  --with-libpsl \
- --with-openssl 
+ --with-openssl \
+  ac_cv_func_fcntl=no
 (($? != 0)) && { printf '%s\n' "[wget openssl] configure failed"; exit 1; }
 make -j $CORE
 (($? != 0)) && { printf '%s\n' "[wget openssl] make failed"; exit 1; }
