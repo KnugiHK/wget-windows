@@ -52,13 +52,13 @@ To ensure that the binaries provided in the releases were built directly from th
 ### Using PowerShell (Windows)
 
 ```powershell
-gci "wget-gnutls/*", "wget-openssl/*" | % { gh attestation verify $_.FullName -R KnugiHK/wget-on-windows }
+gci "wget*.exe" | % { gh attestation verify $_.FullName -R KnugiHK/wget-on-windows }
 ```
 
 ### Using Bash (Linux/WSL/macOS)
 
 ```bash
-for file in wget-gnutls/* wget-openssl/*; do ; gh attestation verify "$file" -R KnugiHK/wget-on-windows; done
+for file in wget*.exe; do ; gh attestation verify "$file" -R KnugiHK/wget-on-windows; done
 ```
 ## Legacy & Credits
 
