@@ -51,3 +51,6 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
+# Artifacts
+build-wget
+build-wget-x86
