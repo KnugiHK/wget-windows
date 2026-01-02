@@ -1,8 +1,8 @@
+#!/bin/bash
 #
 # wget build script for Windows environment
-# Author: WebFolder
-# https://webfolder.io
-# March 15, 2021
+# Author: WebFolder, KnugiHK
+# https://github.com/KnugiHK/wget-on-windows
 #
 mkdir build-wget
 cd build-wget || exit
