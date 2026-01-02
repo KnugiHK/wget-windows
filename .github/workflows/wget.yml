@@ -7,46 +7,74 @@ on:
   workflow_dispatch:
 
 jobs:
-  ubuntu:
-    name: ubuntu
+  # --- 64-bit Build Job ---
+  build-x64:
+    name: Build x64
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
-        name: Checkout project
+
       - name: Install prerequisites
         run: |
-          sudo apt-get install -y mingw-w64 mingw-w64-tools mingw-w64-i686-dev gcc make m4 pkg-config automake gettext libiconv-hook-dev
+          sudo apt-get update
+          sudo apt-get install -y mingw-w64 mingw-w64-tools gcc make m4 pkg-config automake gettext libiconv-hook-dev
+
       - name: Build wget 64-bit
         run: |
           x86_64-w64-mingw32-gcc --version
           ./build.sh
+
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: wget-x64-binaries
+          path: |
+            build-wget/install/wget-gnutls/wget-gnutls-x64.exe
+            build-wget/install/wget-openssl/wget-openssl-x64.exe
+
+  # --- 32-bit Build Job ---
+  build-x86:
+    name: Build x86
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mingw-w64 mingw-w64-tools mingw-w64-i686-dev gcc make m4 pkg-config automake gettext libiconv-hook-dev
+
       - name: Build wget 32-bit
         run: |
           i686-w64-mingw32-gcc --version
           ./build-x86.sh
-      - name: Archive gnutls
+
+      - name: Archive artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: wget-1.21.4-64bit-GnuTLS
-          path: build-wget/install/wget-gnutls/wget-gnutls-x64.exe
-      - name: Archive openssl
-        uses: actions/upload-artifact@v4
+          name: wget-x86-binaries
+          path: |
+            build-wget-x86/install/wget-gnutls/wget-gnutls-x86.exe
+            build-wget-x86/install/wget-openssl/wget-openssl-x86.exe
+
+  # --- Release Job ---
+  release:
+    name: Create Release
+    needs: [build-x64, build-x86]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - uses: actions/checkout@v4 
+      
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
         with:
-          name: wget-1.21.4-64bit-OpenSSL
-          path: build-wget/install/wget-openssl/wget-openssl-x64.exe
-      - name: Archive gnutls (x86)
-        uses: actions/upload-artifact@v4
-        with:
-          name: wget-1.21.4-32bit-GnuTLS
-          path: build-wget-x86/install/wget-gnutls/wget-gnutls-x86.exe
-      - name: Archive openssl (x86)
-        uses: actions/upload-artifact@v4
-        with:
-          name: wget-1.21.4-32bit-OpenSSL
-          path: build-wget-x86/install/wget-openssl/wget-openssl-x86.exe
-      - uses: ncipollo/release-action@v1
+          path: ./downloads
+
+      - name: Create GitHub Release
+        uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          artifacts: "build-wget-webfolder.io/install/wget-gnutls/wget-gnutls-x64.exe,build-wget-webfolder.io/install/wget-openssl/wget-openssl-x64.exe,build-wget-webfolder-x86.io/install/wget-openssl/wget-openssl-x86.exe"
+          artifacts: "./downloads/**/*.exe"
           bodyFile: "RELEASE.md"
           token: ${{ secrets.GITHUB_TOKEN }}
