@@ -1,4 +1,4 @@
-# Windows Binaries of GNU Wget 1.21.4
+# Windows Binaries of GNU Wget 1.24.5
 
 This is a command-line tool that can be used to retrieve files via the HTTP, HTTPS, and FTP protocols.
 
@@ -23,15 +23,21 @@ All the necessary libraries have been **statically linked**, so there is no need
 
 ### Wget features
 
-The Windows version of Wget includes all features of Wget except for NLS (the multi-language version).
+The Windows version of Wget includes all features of Wget except for NLS (the multi-language version) and Metalink.
+
+> [!IMPORTANT]
+> 
+> As of version 1.24.5, Metalink support has been fully disabled and removed. Consequently, the following dependencies are no longer required and have been removed: **expat**, **gpgme**, and **assuan**.
+> 
+> If you require Metalink support for your workflow, please refer to commits [4e3c8f9](https://github.com/KnugiHK/wget-windows/commit/4e3c8f993337ac23032b59e75a64cc61e4b75034) and [e93476e](https://github.com/KnugiHK/wget-windows/commit/e93476e0f9296463a4848cc6e1675531075340d1) to review the specific changes and code removals.
 
 GnuTLS version:
 
-`+cares +digest +gpgme +https +ipv6 +iri +large-file +metalink -nls +ntlm +opie +psl +ssl/gnutls`
+`+cares +digest -gpgme +https +ipv6 +iri +large-file -metalink -nls +ntlm +opie +psl +ssl/gnutls`
 
 OpenSSL version:
 
-`+cares +digest +gpgme +https +ipv6 +iri +large-file +metalink -nls +ntlm +opie +psl +ssl/openssl`
+`+cares +digest -gpgme +https +ipv6 +iri +large-file -metalink -nls +ntlm +opie +psl +ssl/openssl`
 
 ### Local Build
 
