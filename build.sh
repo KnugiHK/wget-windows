@@ -282,9 +282,9 @@ fi
 # build gpgme
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libgpgme.a ]; then
-  wget -nc https://gnupg.org/ftp/gcrypt/gpgme/gpgme-1.23.2.tar.bz2
-  tar -xf gpgme-1.23.2.tar.bz2
-  cd gpgme-1.23.2 || exit
+  wget -nc https://gnupg.org/ftp/gcrypt/gpgme/gpgme-2.0.1.tar.bz2
+  tar -xf gpgme-2.0.1.tar.bz2
+  cd gpgme-2.0.1 || exit
   ./configure \
   --host=$WGET_MINGW_HOST \
   --disable-shared \
