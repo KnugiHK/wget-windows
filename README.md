@@ -24,7 +24,7 @@ The Windows version of Wget includes all features of Wget except for NLS (the mu
 
 > [!IMPORTANT]
 > 
-> As of version 1.24.5, Metalink support has been fully disabled and removed. Consequently, the following dependencies are no longer required and have been removed: **expat**, **gpgme**, and **assuan**.
+> Since version 1.24.5, Metalink support has been fully disabled and removed. Consequently, the following dependencies are no longer required and have been removed: **expat**, **gpgme**, and **assuan**.
 > 
 > If you require Metalink support for your workflow, please refer to commits [4e3c8f9](https://github.com/KnugiHK/wget-windows/commit/4e3c8f993337ac23032b59e75a64cc61e4b75034) and [e93476e](https://github.com/KnugiHK/wget-windows/commit/e93476e0f9296463a4848cc6e1675531075340d1) to review the specific changes and code removals.
 
@@ -41,11 +41,9 @@ OpenSSL version:
 To build Wget for Windows on WSL 1 or 2 (Debian/Ubuntu), please follow these steps.
 
 ```bash
-sudo apt-get install -y mingw-w64 mingw-w64-tools mingw-w64-i686-dev gcc
-sudo apt-get install -y make m4 pkg-config automake gettext
-cd /tmp
-git clone https://github.com/webfolderio/wget-windows.git
-cd wget-windows
+sudo apt-get install -y mingw-w64 mingw-w64-tools mingw-w64-i686-dev gcc make m4 pkg-config automake gettext
+git clone https://github.com/KnugiHK/wget-on-windows
+cd wget-on-windows
 ./build.sh
 ```
 
@@ -56,11 +54,11 @@ To ensure that the binaries provided in the releases were built directly from th
 ### Using PowerShell (Windows)
 
 ```powershell
-gci "wget-gnutls/*", "wget-openssl/*" | % { gh attestation verify $_.FullName -R KnugiHK/wget-windows }
+gci "wget-gnutls/*", "wget-openssl/*" | % { gh attestation verify $_.FullName -R KnugiHK/wget-on-windows }
 ```
 
 ### Using Bash (Linux/WSL/macOS)
 
 ```bash
-for file in wget-gnutls/* wget-openssl/*; do ; gh attestation verify "$file" -R KnugiHK/wget-windows; done
+for file in wget-gnutls/* wget-openssl/*; do ; gh attestation verify "$file" -R KnugiHK/wget-on-windows; done
 ```
