@@ -29,6 +29,14 @@ jobs:
           x86_64-w64-mingw32-gcc --version
           ./build.sh
 
+      - name: Upload Debug Logs on Failure
+        if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: build-logs-x64
+          path: |
+            build-wget/wget-1.24.5/config.log
+
       - name: Attest x64 Binaries
         uses: actions/attest-build-provenance@v3
         with:
@@ -43,6 +51,7 @@ jobs:
           path: |
             build-wget/install/wget-gnutls/wget-gnutls-x64.exe
             build-wget/install/wget-openssl/wget-openssl-x64.exe
+            build-wget/wget-1.24.5/config.log
 
   # --- 32-bit Build Job ---
   build-x86:
@@ -75,6 +84,7 @@ jobs:
           path: |
             build-wget-x86/install/wget-gnutls/wget-gnutls-x86.exe
             build-wget-x86/install/wget-openssl/wget-openssl-x86.exe
+            build-wget-x86/wget-1.24.5/config.log
 
   # --- Release Job ---
   release:
