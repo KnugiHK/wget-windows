@@ -51,3 +51,19 @@ git clone https://github.com/webfolderio/wget-windows.git
 cd wget-windows
 ./build.sh
 ```
+
+## Verifying Build Integrity
+
+To ensure that the binaries provided in the releases were built directly from this source code via GitHub Actions and have not been tampered with, GitHub Artifact Attestations is used. You can verify the authenticity of any `.exe` using the GitHub CLI.
+
+### Using PowerShell (Windows)
+
+```powershell
+gci "wget-gnutls/*", "wget-openssl/*" | % { gh attestation verify $_.FullName -R KnugiHK/wget-windows }
+```
+
+### Using Bash (Linux/WSL/macOS)
+
+```bash
+for file in wget-gnutls/* wget-openssl/*; do ; gh attestation verify "$file" -R KnugiHK/wget-windows; done
+```
