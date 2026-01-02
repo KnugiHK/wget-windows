@@ -305,51 +305,6 @@ if [ ! -f "$INSTALL_PATH"/lib/libgpgme.a ]; then
   cd ..
 fi
 # -----------------------------------------------------------------------------
-# build expat
-# -----------------------------------------------------------------------------
-if [ ! -f "$INSTALL_PATH"/lib/libexpat.a ]; then
-  wget -nc https://github.com/libexpat/libexpat/releases/download/R_2_7_3/expat-2.7.3.tar.gz
-  tar -xf expat-2.7.3.tar.gz
-  cd expat-2.7.3 || exit
-  ./configure \
-  --host=$WGET_MINGW_HOST \
-  --disable-shared \
-  --prefix="$INSTALL_PATH" \
-  --enable-static \
-  --without-docbook \
-  --without-tests \
-  --with-libgpg-error-prefix="$INSTALL_PATH"
-  (($? != 0)) && { printf '%s\n' "[expat] configure failed"; exit 1; }
-  make -j $CORE
-  (($? != 0)) && { printf '%s\n' "[expat] make failed"; exit 1; }
-  make install
-  (($? != 0)) && { printf '%s\n' "[expat] make install"; exit 1; }
-  cd ..
-fi
-# -----------------------------------------------------------------------------
-# build metalink
-# -----------------------------------------------------------------------------
-if [ ! -f "$INSTALL_PATH"/lib/libmetalink.a ]; then
-  wget -nc https://github.com/metalink-dev/libmetalink/releases/download/release-0.1.3/libmetalink-0.1.3.tar.gz
-  tar -xf libmetalink-0.1.3.tar.gz
-  cd libmetalink-0.1.3 || exit
-  EXPAT_CFLAGS="-I$INSTALL_PATH/include" \
-  EXPAT_LIBS="-L$INSTALL_PATH/lib -lexpat" \
-  ./configure \
-  --host=$WGET_MINGW_HOST \
-  --disable-shared \
-  --prefix="$INSTALL_PATH" \
-  --enable-static \
-  --with-libgpg-error-prefix="$INSTALL_PATH" \
-  --with-libexpat
-  (($? != 0)) && { printf '%s\n' "[metalink] configure failed"; exit 1; }
-  make -j $CORE
-  (($? != 0)) && { printf '%s\n' "[metalink] make failed"; exit 1; }
-  make install
-  (($? != 0)) && { printf '%s\n' "[metalink] make install"; exit 1; }
-  cd ..
-fi
-# -----------------------------------------------------------------------------
 # build zlib
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libz.a ]; then
@@ -403,9 +358,7 @@ CFLAGS="-I$INSTALL_PATH/include -D_WIN32_WINNT=0x601 -DGNUTLS_INTERNAL_BUILD=1 -
  CARES_LIBS="-L$INSTALL_PATH/lib -lcares" \
  PCRE2_CFLAGS=$CFLAGS \
  PCRE2_LIBS="-L$INSTALL_PATH/lib -lpcre2-8"  \
- METALINK_CFLAGS="-I$INSTALL_PATH/include" \
- METALINK_LIBS="-L$INSTALL_PATH/lib -lmetalink -lexpat" \
- LIBS="-L$INSTALL_PATH/lib -lbcrypt -lhogweed -lnettle -lgmp -ltasn1 -lidn2 -lpsl -liphlpapi -lcares -lunistring -liconv -lpcre2-8 -lmetalink -lexpat -lgpgme -lassuan -lgpg-error -lz -lcrypt32 -lpthread" \
+ LIBS="-L$INSTALL_PATH/lib -lbcrypt -lhogweed -lnettle -lgmp -ltasn1 -lidn2 -lpsl -liphlpapi -lcares -lunistring -liconv -lpcre2-8 -lgpgme -lassuan -lgpg-error -lz -lcrypt32 -lpthread" \
  ./configure \
  --host=$WGET_MINGW_HOST \
  --prefix="$INSTALL_PATH" \
@@ -418,7 +371,6 @@ CFLAGS="-I$INSTALL_PATH/include -D_WIN32_WINNT=0x601 -DGNUTLS_INTERNAL_BUILD=1 -
  --with-libidn \
  --with-cares \
  --with-libpsl \
- --with-metalink \
  --with-gpgme-prefix="$INSTALL_PATH"
 (($? != 0)) && { printf '%s\n' "[wget gnutls] configure failed"; exit 1; }
 make clean
@@ -445,9 +397,7 @@ CFLAGS="-I$INSTALL_PATH/include -D_WIN32_WINNT=0x601 -DCARES_STATICLIB=1 -DPCRE2
  CARES_LIBS="-L$INSTALL_PATH/lib -lcares" \
  PCRE2_CFLAGS=$CFLAGS \
  PCRE2_LIBS="-L$INSTALL_PATH/lib -lpcre2-8"  \
- METALINK_CFLAGS="-I$INSTALL_PATH/include" \
- METALINK_LIBS="-L$INSTALL_PATH/lib -lmetalink -lexpat" \
- LIBS="-L$INSTALL_PATH/lib -lbcrypt -lws2_32 -lidn2 -lpsl -liphlpapi -lcares -lunistring -liconv -lpcre2-8 -lmetalink -lexpat -lgpgme -lassuan -lgpg-error -lcrypto -lssl -lz -lcrypt32" \
+ LIBS="-L$INSTALL_PATH/lib -lbcrypt -lws2_32 -lidn2 -lpsl -liphlpapi -lcares -lunistring -liconv -lpcre2-8 -lgpgme -lassuan -lgpg-error -lcrypto -lssl -lz -lcrypt32" \
  ./configure \
  --host=$WGET_MINGW_HOST \
  --prefix="$INSTALL_PATH" \
@@ -460,7 +410,6 @@ CFLAGS="-I$INSTALL_PATH/include -D_WIN32_WINNT=0x601 -DCARES_STATICLIB=1 -DPCRE2
  --with-libidn \
  --with-cares \
  --with-libpsl \
- --with-metalink \
  --with-openssl \
  --with-gpgme-prefix="$INSTALL_PATH"
 (($? != 0)) && { printf '%s\n' "[wget openssl] configure failed"; exit 1; }
