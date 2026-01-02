@@ -261,9 +261,9 @@ fi
 # build assuan
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libassuan.a ]; then
-  wget -nc https://gnupg.org/ftp/gcrypt/libassuan/libassuan-2.5.7.tar.bz2
-  tar -xf libassuan-2.5.7.tar.bz2
-  cd libassuan-2.5.7 || exit
+  wget -nc https://gnupg.org/ftp/gcrypt/libassuan/libassuan-3.0.2.tar.bz2
+  tar -xf libassuan-3.0.2.tar.bz2
+  cd libassuan-3.0.2 || exit
   ./configure \
   --host=$WGET_MINGW_HOST \
   --disable-shared \
