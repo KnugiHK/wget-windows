@@ -290,7 +290,7 @@ if [ ! -f "$INSTALL_PATH"/lib64/libssl.a ]; then
   no-tests \
   --with-zlib-include="$INSTALL_PATH" \
   --with-zlib-lib="$INSTALL_PATH"/lib/libz.a
- make
+ make -j $CORE
  make install_sw
  cd ..
 fi
