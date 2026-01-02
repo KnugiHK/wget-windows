@@ -421,7 +421,7 @@ CFLAGS="-I$INSTALL_PATH/include -DGNUTLS_INTERNAL_BUILD=1 -DCARES_STATICLIB=1 -D
  --with-gpgme-prefix="$INSTALL_PATH"
 (($? != 0)) && { printf '%s\n' "[wget gnutls] configure failed"; exit 1; }
 make clean
-make
+make -j $CORE
 (($? != 0)) && { printf '%s\n' "[wget gnutls] make failed"; exit 1; }
 make install
 (($? != 0)) && { printf '%s\n' "[wget gnutls] make install"; exit 1; }
@@ -463,7 +463,7 @@ CFLAGS="-I$INSTALL_PATH/include -DCARES_STATICLIB=1 -DPCRE2_STATIC=1 -DNDEBUG -O
  --with-openssl \
  --with-gpgme-prefix="$INSTALL_PATH"
 (($? != 0)) && { printf '%s\n' "[wget openssl] configure failed"; exit 1; }
-make
+make -j $CORE
 (($? != 0)) && { printf '%s\n' "[wget openssl] make failed"; exit 1; }
 make install
 (($? != 0)) && { printf '%s\n' "[wget openssl] make install"; exit 1; }
