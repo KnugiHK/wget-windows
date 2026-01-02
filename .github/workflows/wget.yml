@@ -1,10 +1,15 @@
-name: wget
+name: Build wget for Windows
 
 on:
   create:
     tags:
       - v*
   workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+  attestations: write
 
 jobs:
   # --- 64-bit Build Job ---
@@ -23,6 +28,13 @@ jobs:
         run: |
           x86_64-w64-mingw32-gcc --version
           ./build.sh
+
+      - name: Attest x64 Binaries
+        uses: actions/attest-build-provenance@v3
+        with:
+          subject-path: |
+            build-wget/install/wget-gnutls/wget-gnutls-x64.exe
+            build-wget/install/wget-openssl/wget-openssl-x64.exe
 
       - name: Archive artifacts
         uses: actions/upload-artifact@v6
@@ -49,6 +61,13 @@ jobs:
           i686-w64-mingw32-gcc --version
           ./build-x86.sh
 
+      - name: Attest x86 Binaries
+        uses: actions/attest-build-provenance@v3
+        with:
+          subject-path: |
+            build-wget-x86/install/wget-gnutls/wget-gnutls-x86.exe
+            build-wget-x86/install/wget-openssl/wget-openssl-x86.exe
+
       - name: Archive artifacts
         uses: actions/upload-artifact@v6
         with:
@@ -63,11 +82,13 @@ jobs:
     needs: [build-x64, build-x86]
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v6
       
       - name: Download all artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           path: ./downloads
 
