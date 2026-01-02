@@ -2,11 +2,9 @@
 
 This is a command-line tool that can be used to retrieve files via the HTTP, HTTPS, and FTP protocols.
 
-GNU Wget is a free software package that allows users to retrieve files through the most commonly used Internet protocols,
-including HTTP, HTTPS, FTP, and FTPS. As a non-interactive command-line tool,
-it can be easily integrated into scripts, cron jobs, and terminals.
+GNU Wget is a free software package that allows users to retrieve files through the most commonly used Internet protocols, including HTTP, HTTPS, FTP, and FTPS. As a non-interactive command-line tool, it can be easily integrated into scripts, cron jobs, and terminals.
 
-This project was originally created by @webfolderio. Since the original repository appears to be getting reverted or removed, this repository serves as standalone backup for preservation.
+This project is a continuation of the work originally started by @webfolderio. While initially created as a backup for preservation, it is now actively maintained with a focus on security, modern dependencies, and automated verified builds.
 
 ## How to use wget
 
@@ -16,8 +14,7 @@ To learn how to use Wget, please refer to the official GNU Wget manual by clicki
 
 ### Build Environment
 
-Wget has been built using GitHub Actions and cross-compiled with mingw64 on Ubuntu, using GNU/gcc 9.3.
-It is completely safe to use and free from viruses.
+Wget has been built using GitHub Actions and cross-compiled with mingw64 on Ubuntu. It is completely safe to use and free from viruses.
 
 All the necessary libraries have been **statically linked**, so there is no need to use any third-party DLL.
 
