@@ -241,9 +241,9 @@ fi
 # build gpg-error
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libgpg-error.a ]; then
-  wget -nc https://www.gnupg.org/ftp/gcrypt/libgpg-error/libgpg-error-1.48.tar.gz
-  tar -xf libgpg-error-1.48.tar.gz
-  cd libgpg-error-1.48 || exit
+  wget -nc https://www.gnupg.org/ftp/gcrypt/libgpg-error/libgpg-error-1.58.tar.bz2
+  tar -xf libgpg-error-1.58.tar.bz2
+  cd libgpg-error-1.58 || exit
   ./configure \
   --host=$WGET_MINGW_HOST \
   --disable-shared \
