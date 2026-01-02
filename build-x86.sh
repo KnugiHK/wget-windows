@@ -258,53 +258,6 @@ if [ ! -f "$INSTALL_PATH"/lib/libgpg-error.a ]; then
   cd ..
 fi
 # -----------------------------------------------------------------------------
-# build assuan
-# -----------------------------------------------------------------------------
-if [ ! -f "$INSTALL_PATH"/lib/libassuan.a ]; then
-  wget -nc https://gnupg.org/ftp/gcrypt/libassuan/libassuan-3.0.2.tar.bz2
-  tar -xf libassuan-3.0.2.tar.bz2
-  cd libassuan-3.0.2 || exit
-  ./configure \
-  --host=$WGET_MINGW_HOST \
-  --disable-shared \
-  --prefix="$INSTALL_PATH" \
-  --enable-static \
-  --disable-doc \
-  --with-libgpg-error-prefix="$INSTALL_PATH"
-  (($? != 0)) && { printf '%s\n' "[assuan] configure failed"; exit 1; }
-  make -j $CORE
-  (($? != 0)) && { printf '%s\n' "[assuan] make failed"; exit 1; }
-  make install
-  (($? != 0)) && { printf '%s\n' "[assuan] make install"; exit 1; }
-  cd ..
-fi
-# -----------------------------------------------------------------------------
-# build gpgme
-# -----------------------------------------------------------------------------
-if [ ! -f "$INSTALL_PATH"/lib/libgpgme.a ]; then
-  wget -nc https://gnupg.org/ftp/gcrypt/gpgme/gpgme-2.0.1.tar.bz2
-  tar -xf gpgme-2.0.1.tar.bz2
-  cd gpgme-2.0.1 || exit
-  ./configure \
-  --host=$WGET_MINGW_HOST \
-  --disable-shared \
-  --prefix="$INSTALL_PATH" \
-  --enable-static \
-  --with-libgpg-error-prefix="$INSTALL_PATH" \
-  --disable-gpg-test \
-  --disable-g13-test \
-  --disable-gpgsm-test \
-  --disable-gpgconf-test \
-  --disable-glibtest \
-  --with-libassuan-prefix="$INSTALL_PATH"
-  (($? != 0)) && { printf '%s\n' "[gpgme] configure failed"; exit 1; }
-  make -j $CORE
-  (($? != 0)) && { printf '%s\n' "[gpgme] make failed"; exit 1; }
-  make install
-  (($? != 0)) && { printf '%s\n' "[gpgme] make install"; exit 1; }
-  cd ..
-fi
-# -----------------------------------------------------------------------------
 # build zlib
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libz.a ]; then
@@ -358,7 +311,7 @@ CFLAGS="-I$INSTALL_PATH/include -D_WIN32_WINNT=0x601 -DGNUTLS_INTERNAL_BUILD=1 -
  CARES_LIBS="-L$INSTALL_PATH/lib -lcares" \
  PCRE2_CFLAGS=$CFLAGS \
  PCRE2_LIBS="-L$INSTALL_PATH/lib -lpcre2-8"  \
- LIBS="-L$INSTALL_PATH/lib -lbcrypt -lhogweed -lnettle -lgmp -ltasn1 -lidn2 -lpsl -liphlpapi -lcares -lunistring -liconv -lpcre2-8 -lgpgme -lassuan -lgpg-error -lz -lcrypt32 -lpthread" \
+ LIBS="-L$INSTALL_PATH/lib -lbcrypt -lhogweed -lnettle -lgmp -ltasn1 -lidn2 -lpsl -liphlpapi -lcares -lunistring -liconv -lpcre2-8 -lgpg-error -lz -lcrypt32 -lpthread" \
  ./configure \
  --host=$WGET_MINGW_HOST \
  --prefix="$INSTALL_PATH" \
@@ -370,8 +323,7 @@ CFLAGS="-I$INSTALL_PATH/include -D_WIN32_WINNT=0x601 -DGNUTLS_INTERNAL_BUILD=1 -
  --with-included-libunistring \
  --with-libidn \
  --with-cares \
- --with-libpsl \
- --with-gpgme-prefix="$INSTALL_PATH"
+ --with-libpsl
 (($? != 0)) && { printf '%s\n' "[wget gnutls] configure failed"; exit 1; }
 make clean
 make -j $CORE
@@ -397,7 +349,7 @@ CFLAGS="-I$INSTALL_PATH/include -D_WIN32_WINNT=0x601 -DCARES_STATICLIB=1 -DPCRE2
  CARES_LIBS="-L$INSTALL_PATH/lib -lcares" \
  PCRE2_CFLAGS=$CFLAGS \
  PCRE2_LIBS="-L$INSTALL_PATH/lib -lpcre2-8"  \
- LIBS="-L$INSTALL_PATH/lib -lbcrypt -lws2_32 -lidn2 -lpsl -liphlpapi -lcares -lunistring -liconv -lpcre2-8 -lgpgme -lassuan -lgpg-error -lcrypto -lssl -lz -lcrypt32" \
+ LIBS="-L$INSTALL_PATH/lib -lbcrypt -lws2_32 -lidn2 -lpsl -liphlpapi -lcares -lunistring -liconv -lpcre2-8 -lgpg-error -lcrypto -lssl -lz -lcrypt32" \
  ./configure \
  --host=$WGET_MINGW_HOST \
  --prefix="$INSTALL_PATH" \
@@ -410,8 +362,7 @@ CFLAGS="-I$INSTALL_PATH/include -D_WIN32_WINNT=0x601 -DCARES_STATICLIB=1 -DPCRE2
  --with-libidn \
  --with-cares \
  --with-libpsl \
- --with-openssl \
- --with-gpgme-prefix="$INSTALL_PATH"
+ --with-openssl 
 (($? != 0)) && { printf '%s\n' "[wget openssl] configure failed"; exit 1; }
 make -j $CORE
 (($? != 0)) && { printf '%s\n' "[wget openssl] make failed"; exit 1; }
