@@ -4,8 +4,6 @@ This is a command-line tool that can be used to retrieve files via the HTTP, HTT
 
 GNU Wget is a free software package that allows users to retrieve files through the most commonly used Internet protocols, including HTTP, HTTPS, FTP, and FTPS. As a non-interactive command-line tool, it can be easily integrated into scripts, cron jobs, and terminals.
 
-This project is a continuation of the work originally started by @webfolderio. While initially created as a backup for preservation, it is now actively maintained with a focus on security, modern dependencies, and automated verified builds.
-
 ## How to use wget
 
 To learn how to use Wget, please refer to the official GNU Wget manual by clicking the link below.
@@ -62,3 +60,8 @@ gci "wget-gnutls/*", "wget-openssl/*" | % { gh attestation verify $_.FullName -R
 ```bash
 for file in wget-gnutls/* wget-openssl/*; do ; gh attestation verify "$file" -R KnugiHK/wget-on-windows; done
 ```
+## Legacy & Credits
+
+This project is the active continuation of the wget-windows port, originally founded by @webfolderio. As a former contributor to the original repository, I stepped in to keep the project alive for the Windows community after the original source became unavailable.
+
+While this repository initially served as a backup for preservation, it has evolved into an independent distribution focused on security hardening, modern dependencies, and automated, verified builds.
