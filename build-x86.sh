@@ -176,9 +176,9 @@ fi
 # build iconv
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libiconv.a ]; then
-  wget -nc https://ftp.gnu.org/gnu/libiconv/libiconv-1.17.tar.gz
-  tar -xf libiconv-1.17.tar.gz
-  cd libiconv-1.17 || exit
+  wget -nc https://ftp.gnu.org/gnu/libiconv/libiconv-1.18.tar.gz
+  tar -xf libiconv-1.18.tar.gz
+  cd libiconv-1.18 || exit
   ./configure \
   --host=$WGET_MINGW_HOST \
   --disable-shared \
