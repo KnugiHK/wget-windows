@@ -258,6 +258,21 @@ if [ ! -f "$INSTALL_PATH"/lib/libgpg-error.a ]; then
   cd ..
 fi
 # -----------------------------------------------------------------------------
+# build zlib
+# -----------------------------------------------------------------------------
+if [ ! -f "$INSTALL_PATH"/lib/libz.a ]; then
+  wget -nc https://github.com/madler/zlib/releases/download/v1.3.1/zlib-1.3.1.tar.gz
+  tar -xf zlib-1.3.1.tar.gz
+  cd zlib-1.3.1 || exit
+  CC=$WGET_GCC CFLAGS="-m32 -march=i686" ./configure --static --prefix="$INSTALL_PATH"
+  (($? != 0)) && { printf '%s\n' "[zlib] configure failed"; exit 1; }
+  make -j $CORE
+  (($? != 0)) && { printf '%s\n' "[zlib] make failed"; exit 1; }
+  make install
+  (($? != 0)) && { printf '%s\n' "[zlib] make install"; exit 1; }
+  cd ..
+fi
+# -----------------------------------------------------------------------------
 # build gettext (provides libintl for NLS)
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libintl.a ]; then
@@ -283,21 +298,6 @@ if [ ! -f "$INSTALL_PATH"/lib/libintl.a ]; then
   make install
   (($? != 0)) && { printf '%s\n' "[gettext-runtime] make install"; exit 1; }
   cd ../..
-fi
-# -----------------------------------------------------------------------------
-# build zlib
-# -----------------------------------------------------------------------------
-if [ ! -f "$INSTALL_PATH"/lib/libz.a ]; then
-  wget -nc https://github.com/madler/zlib/releases/download/v1.3.1/zlib-1.3.1.tar.gz
-  tar -xf zlib-1.3.1.tar.gz
-  cd zlib-1.3.1 || exit
-  CC=$WGET_GCC CFLAGS="-m32 -march=i686" ./configure --static --prefix="$INSTALL_PATH"
-  (($? != 0)) && { printf '%s\n' "[zlib] configure failed"; exit 1; }
-  make -j $CORE
-  (($? != 0)) && { printf '%s\n' "[zlib] make failed"; exit 1; }
-  make install
-  (($? != 0)) && { printf '%s\n' "[zlib] make install"; exit 1; }
-  cd ..
 fi
 # -----------------------------------------------------------------------------
 # build openssl
