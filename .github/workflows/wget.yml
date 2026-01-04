@@ -4,6 +4,9 @@ on:
   create:
     tags:
       - v*
+  push:
+    branches:
+      - '**'
   workflow_dispatch:
 
 permissions:
