@@ -120,6 +120,8 @@ const generateHTML = (content) => `
         .btn:hover {
             transform: translateY(-1px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            color: #FFFFFF;
+            text-decoration: none;
         }
 
         .btn-primary {
