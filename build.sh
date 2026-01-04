@@ -273,6 +273,33 @@ if [ ! -f "$INSTALL_PATH"/lib/libz.a ]; then
   cd ..
 fi
 # -----------------------------------------------------------------------------
+# build gettext (provides libintl for NLS)
+# -----------------------------------------------------------------------------
+if [ ! -f "$INSTALL_PATH"/lib/libintl.a ]; then
+  wget -nc https://ftp.gnu.org/gnu/gettext/gettext-0.26.tar.gz
+  tar -xf gettext-0.26.tar.gz
+  cd gettext-0.26/gettext-runtime || exit
+  ./configure \
+  --host=$WGET_MINGW_HOST \
+  --prefix="$INSTALL_PATH" \
+  --disable-shared \
+  --enable-static \
+  --disable-java \
+  --disable-native-java \
+  --disable-libasprintf \
+  --disable-csharp \
+  --disable-libasprintf \
+  --enable-nls \
+  --with-libiconv-prefix="$INSTALL_PATH" \
+  --enable-relocatable
+  (($? != 0)) && { printf '%s\n' "[gettext-runtime] configure failed"; exit 1; }
+  make -j $CORE
+  (($? != 0)) && { printf '%s\n' "[gettext-runtime] make failed"; exit 1; }
+  make install
+  (($? != 0)) && { printf '%s\n' "[gettext-runtime] make install"; exit 1; }
+  cd ../..
+fi
+# -----------------------------------------------------------------------------
 # build openssl
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib64/libssl.a ]; then
@@ -311,7 +338,7 @@ CFLAGS="-I$INSTALL_PATH/include -DGNUTLS_INTERNAL_BUILD=1 -DCARES_STATICLIB=1 -D
  CARES_LIBS="-L$INSTALL_PATH/lib -lcares" \
  PCRE2_CFLAGS=$CFLAGS \
  PCRE2_LIBS="-L$INSTALL_PATH/lib -lpcre2-8"  \
- LIBS="-L$INSTALL_PATH/lib -lhogweed -lnettle -lgmp -ltasn1 -lidn2 -lpsl -liphlpapi -lcares -lunistring -liconv -lpcre2-8 -lgpg-error -lz -lcrypt32 -lpthread" \
+ LIBS="-L$INSTALL_PATH/lib -lhogweed -lnettle -lgmp -ltasn1 -lidn2 -lpsl -liphlpapi -lcares -lunistring -liconv -lpcre2-8 -lgpg-error -lz -lcrypt32 -lpthread -lintl" \
  ./configure \
  --host=$WGET_MINGW_HOST \
  --prefix="$INSTALL_PATH" \
@@ -349,7 +376,7 @@ CFLAGS="-I$INSTALL_PATH/include -DCARES_STATICLIB=1 -DPCRE2_STATIC=1 -DNDEBUG -O
  CARES_LIBS="-L$INSTALL_PATH/lib -lcares" \
  PCRE2_CFLAGS=$CFLAGS \
  PCRE2_LIBS="-L$INSTALL_PATH/lib -lpcre2-8"  \
- LIBS="-L$INSTALL_PATH/lib -L$INSTALL_PATH/lib64 -lidn2 -lpsl -liphlpapi -lcares -lunistring -liconv -lpcre2-8 -lgpg-error -lcrypto -lssl -lz -lcrypt32" \
+ LIBS="-L$INSTALL_PATH/lib -L$INSTALL_PATH/lib64 -lidn2 -lpsl -liphlpapi -lcares -lunistring -liconv -lpcre2-8 -lgpg-error -lcrypto -lssl -lz -lcrypt32 -lintl" \
  ./configure \
  --host=$WGET_MINGW_HOST \
  --prefix="$INSTALL_PATH" \
