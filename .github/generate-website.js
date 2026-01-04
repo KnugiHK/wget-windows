@@ -262,9 +262,29 @@ async function generateSite() {
 
             .modal-footer {
                 display: flex;
+                align-items: center;
+                justify-content: space-between; /* Spreads content to both ends */
+                gap: 16px;
+                margin-top: 32px;
+                padding-top: 20px;
+                border-top: 1px solid var(--border);
+            }
+
+            .version-hint {
+                font-size: 0.85rem;
+                color: var(--text-secondary);
+                text-align: left;
+                flex: 1; /* Allows the text to take up remaining space */
+            }
+
+            .version-hint a {
+                text-decoration: underline;
+                font-weight: 500;
+            }
+
+            .footer-actions {
+                display: flex;
                 gap: 12px;
-                justify-content: flex-end;
-                margin-top: 24px;
             }
 
             .btn-secondary {
@@ -418,6 +438,15 @@ async function generateSite() {
                 .option-buttons {
                     grid-template-columns: 1fr;
                 }
+                .modal-footer {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+                
+                .footer-actions {
+                    width: 100%;
+                    justify-content: flex-end;
+                }
             }
             
             .markdown-alert {
@@ -525,8 +554,14 @@ async function generateSite() {
                     </div>
 
                     <div class="modal-footer">
-                        <button class="btn btn-secondary" id="cancelBtn">Cancel</button>
-                        <button class="btn btn-success" id="confirmDownloadBtn" disabled>Download</button>
+                        <span class="version-hint">
+                            Not looking for the latest version? 
+                            <a href="https://github.com/KnugiHK/wget-on-windows/releases" target="_blank">See all releases</a>
+                        </span>
+                        <div class="footer-actions">
+                            <button class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                            <button class="btn btn-success" id="confirmDownloadBtn" disabled>Download</button>
+                        </div>
                     </div>
                 </div>
                 <div id="loadingState" class="loading" style="display: none;">
