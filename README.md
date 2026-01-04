@@ -12,9 +12,11 @@ To learn how to use Wget, please refer to the official GNU Wget manual by clicki
 
 ### Build Environment
 
-Wget has been built using GitHub Actions and cross-compiled with mingw64 on Ubuntu. It is completely safe to use and free from viruses.
+- **Native Windows Trust Store Support**: Wget has been built using GitHub Actions and cross-compiled with mingw64 on Ubuntu. It is completely safe to use and free from viruses.
 
-All the necessary libraries have been **statically linked**, so there is no need to use any third-party DLL.
+- **Statically Linked**: All the necessary libraries have been **statically linked**, so there is no need to use any third-party DLL.
+
+- **Native Windows Trust Store Support**: Unlike standard OpenSSL builds that require a manual `cert.pem` file, this build includes a custom patch to automatically trust the Windows Certificate Store.
 
 ### Wget features
 
