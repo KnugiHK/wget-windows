@@ -34,7 +34,7 @@ jobs:
           echo 'wget.knugi.dev' > ./docs/CNAME
       
       - name: Deploy to gh-pages
-        if: github.ref == 'refs/heads/main'  # Ensure deployment only happens from main
+        if: github.ref == 'refs/heads/master'  # Ensure deployment only happens from master
         uses: peaceiris/actions-gh-pages@4f9cc6602d3f66b9c108549d475ec49e8ef4d45e
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
