@@ -29,6 +29,9 @@ jobs:
         run: npm install marked fs-extra marked-alert
       
       - name: Generate website from README
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
         run: |
           node .github/generate-website.js
           echo 'wget.knugi.dev' > ./docs/CNAME
