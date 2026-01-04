@@ -3,7 +3,7 @@ name: Generate Website from README
 on:
   push:
     branches:
-      - main
+      - master
     paths:
       - 'README.md'
       - '.github/workflows/generate-website.yml'
