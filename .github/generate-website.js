@@ -15,7 +15,7 @@ async function generateSite() {
 
         if (response.ok) {
             const data = await response.json();
-            latestVersion = data.tag_name.replace.replace(/^v/, "");
+            latestVersion = data.tag_name.replace(/^v/, "");
             console.log(`Fetched latest version: ${latestVersion}`);
         } else {
             console.error(`Failed to fetch version: ${response.statusText}. Using fallback.`);
