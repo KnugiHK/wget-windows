@@ -475,7 +475,7 @@ const generateHTML = (content) => `
 
         <footer>
             <p>Project maintained by <a href="https://github.com/KnugiHK">KnugiHK</a></p>
-            <p>Hosted on GitHub Pages</p>
+            <p>Licensed under GPLv3</p>
             <p><small>Last updated: ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</small></p>
         </footer>
     </div>
