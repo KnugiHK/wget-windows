@@ -78,7 +78,7 @@ const generateHTML = (content) => `
         }
 
         header {
-            margin-bottom: 60px;
+            margin-bottom: 30px;
             padding-bottom: 32px;
             border-bottom: 1px solid var(--border);
         }
@@ -617,7 +617,10 @@ const generateHTML = (content) => `
 </html>
 `;
 
-const htmlContent = marked.use(markedAlert()).parse(readmeContent, {
+
+// Remove the first h1 heading
+const cleanReadme = readmeContent.replace(/^#\s+.+([\r\n]|$)/m, "");
+const htmlContent = marked.use(markedAlert()).parse(cleanReadme, {
   gfm: true,
   breaks: true,
   renderer: new marked.Renderer()
