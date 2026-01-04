@@ -1,23 +1,105 @@
 #!/bin/bash
 #
-# wget build script for Windows environment
+# wget build script for Windows environment (Combined x86/x64)
 # Author: WebFolder, KnugiHK
 # https://github.com/KnugiHK/wget-on-windows
 #
-mkdir build-wget
-cd build-wget || exit
-mkdir install
-export INSTALL_PATH=$PWD/install
-export WGET_GCC=x86_64-w64-mingw32-gcc
-export WGET_MINGW_HOST=x86_64-w64-mingw32
-export WGET_ARCH=x86-64
-export MINGW_STRIP_TOOL=x86_64-w64-mingw32-strip
-export CORE=$(nproc)
+# Usage: 
+#   ./build.sh       (Builds both x86 and x64)
+#   ./build.sh x86   (Builds x86 only)
+#   ./build.sh x64   (Builds x64 only)
+
+# -----------------------------------------------------------------------------
+# Pre-flight check (WSL/Linux compatibility)
+# -----------------------------------------------------------------------------
 while [[ "$(cat /proc/sys/fs/binfmt_misc/status)" == "enabled" ]]
 do
   echo "The build script requires a password to work."
   sudo bash -c "echo 0 > /proc/sys/fs/binfmt_misc/status"
 done
+
+BUILD_ARCH_TYPE=$1
+ROOT_DIR=$PWD
+
+if [ -z "$BUILD_ARCH_TYPE" ]; then
+  BUILD_ARCH_TYPE="both"
+fi
+
+if [ "$BUILD_ARCH_TYPE" == "both" ]; then
+  echo "================================================================="
+  echo "ENACTING DUAL-ARCHITECHTURE BUILD"
+  echo "================================================================="
+  "$0" x64 || exit 1
+  "$0" x86 || exit 1
+  exit 0
+fi
+
+echo "================================================================="
+echo "STARTING BUILD FOR: $BUILD_ARCH_TYPE"
+echo "================================================================="
+
+# -----------------------------------------------------------------------------
+# Set Architecture Specific Variables
+# -----------------------------------------------------------------------------
+if [ "$BUILD_ARCH_TYPE" == "x86" ]; then
+  WORK_DIR="build-wget-x86"
+  export WGET_GCC=i686-w64-mingw32-gcc
+  export WGET_MINGW_HOST=i686-w64-mingw32
+  export WGET_ARCH=i686
+  export MINGW_STRIP_TOOL=i686-w64-mingw32-strip
+  
+  # Specific compilation flags for x86
+  ZLIB_CONFIG_ENV="CC=$WGET_GCC CFLAGS=-m32 -march=i686"
+  ZLIB_CONFIG_ARGS=""
+  
+  OPENSSL_ARCH="mingw"
+  OPENSSL_FLAGS="-m32"
+  OPENSSL_LIB_DIR="lib"
+  OPENSSL_CROSS="i686-w64-mingw32-"
+  
+  # x86 needs winnt version definition
+  WGET_EXTRA_CFLAGS="-D_WIN32_WINNT=0x601"
+  # x86 needs explicit bcrypt/ws2_32 linking
+  WGET_EXTRA_LIBS_GNUTLS="-lbcrypt"
+  WGET_EXTRA_LIBS_OPENSSL="-lbcrypt -lws2_32"
+  
+  EXE_SUFFIX="-x86.exe"
+
+elif [ "$BUILD_ARCH_TYPE" == "x64" ]; then
+  WORK_DIR="build-wget"
+  export WGET_GCC=x86_64-w64-mingw32-gcc
+  export WGET_MINGW_HOST=x86_64-w64-mingw32
+  export WGET_ARCH=x86-64
+  export MINGW_STRIP_TOOL=x86_64-w64-mingw32-strip
+  
+  # Specific compilation flags for x64
+  ZLIB_CONFIG_ENV="CC=$WGET_GCC"
+  ZLIB_CONFIG_ARGS="--64"
+  
+  OPENSSL_ARCH="mingw64"
+  OPENSSL_FLAGS=""
+  OPENSSL_LIB_DIR="lib64"
+  OPENSSL_CROSS="x86_64-w64-mingw32-"
+  
+  WGET_EXTRA_CFLAGS=""
+  WGET_EXTRA_LIBS_GNUTLS=""
+  WGET_EXTRA_LIBS_OPENSSL=""
+  
+  EXE_SUFFIX="-x64.exe"
+else
+  echo "Unknown architechture"
+  exit 1
+fi
+
+export CORE=$(nproc)
+
+# -----------------------------------------------------------------------------
+# Directory Setup
+# -----------------------------------------------------------------------------
+mkdir -p "$WORK_DIR"
+cd "$WORK_DIR" || exit
+mkdir -p install
+export INSTALL_PATH=$PWD/install
 # -----------------------------------------------------------------------------
 # Build gmp (No dependencies)
 # -----------------------------------------------------------------------------
@@ -264,7 +346,7 @@ if [ ! -f "$INSTALL_PATH"/lib/libz.a ]; then
   wget -nc https://github.com/madler/zlib/releases/download/v1.3.1/zlib-1.3.1.tar.gz
   tar -xf zlib-1.3.1.tar.gz
   cd zlib-1.3.1 || exit
-  CC=$WGET_GCC ./configure --64 --static --prefix="$INSTALL_PATH"
+  env $ZLIB_CONFIG_ENV ./configure $ZLIB_CONFIG_ARGS --static --prefix="$INSTALL_PATH"
   (($? != 0)) && { printf '%s\n' "[zlib] configure failed"; exit 1; }
   make -j $CORE
   (($? != 0)) && { printf '%s\n' "[zlib] make failed"; exit 1; }
@@ -302,16 +384,17 @@ fi
 # -----------------------------------------------------------------------------
 # Build openssl (Requires zlib)
 # -----------------------------------------------------------------------------
-if [ ! -f "$INSTALL_PATH"/lib64/libssl.a ]; then
+if [ ! -f "$INSTALL_PATH/$OPENSSL_LIB_DIR/libssl.a" ]; then
   wget -nc https://github.com/openssl/openssl/releases/download/openssl-3.5.4/openssl-3.5.4.tar.gz
   tar -xf openssl-3.5.4.tar.gz
   cd openssl-3.5.4 || exit
   ./Configure \
+  $OPENSSL_FLAGS \
   --static \
   -static \
   --prefix="$INSTALL_PATH" \
-  --cross-compile-prefix=x86_64-w64-mingw32- \
-  mingw64 \
+  --cross-compile-prefix=$OPENSSL_CROSS \
+  $OPENSSL_ARCH \
   no-shared \
   enable-asm \
   no-tests \
@@ -328,7 +411,7 @@ wget -nc https://ftp.gnu.org/gnu/wget/wget-1.24.5.tar.gz
 tar -xf wget-1.24.5.tar.gz
 cd wget-1.24.5 || exit
 make clean
-CFLAGS="-I$INSTALL_PATH/include -DGNUTLS_INTERNAL_BUILD=1 -DCARES_STATICLIB=1 -DPCRE2_STATIC=1 -DNDEBUG -O2 -march=$WGET_ARCH -mtune=generic -Derror=rpl_error" \
+CFLAGS="-I$INSTALL_PATH/include $WGET_EXTRA_CFLAGS -DGNUTLS_INTERNAL_BUILD=1 -DCARES_STATICLIB=1 -DPCRE2_STATIC=1 -DNDEBUG -O2 -march=$WGET_ARCH -mtune=generic -Derror=rpl_error" \
  LDFLAGS="-L$INSTALL_PATH/lib -static -static-libgcc" \
  GNUTLS_CFLAGS=$CFLAGS \
  GNUTLS_LIBS="-L$INSTALL_PATH/lib -lgnutls -lbcrypt -lncrypt" \
@@ -338,7 +421,7 @@ CFLAGS="-I$INSTALL_PATH/include -DGNUTLS_INTERNAL_BUILD=1 -DCARES_STATICLIB=1 -D
  CARES_LIBS="-L$INSTALL_PATH/lib -lcares" \
  PCRE2_CFLAGS=$CFLAGS \
  PCRE2_LIBS="-L$INSTALL_PATH/lib -lpcre2-8"  \
- LIBS="-L$INSTALL_PATH/lib -lhogweed -lnettle -lgmp -ltasn1 -lidn2 -lpsl -liphlpapi -lcares -lunistring -liconv -lpcre2-8 -lgpg-error -lz -lcrypt32 -lpthread -lintl" \
+ LIBS="-L$INSTALL_PATH/lib $WGET_EXTRA_LIBS_GNUTLS -lhogweed -lnettle -lgmp -ltasn1 -lidn2 -lpsl -liphlpapi -lcares -lunistring -liconv -lpcre2-8 -lgpg-error -lz -lcrypt32 -lpthread -lintl" \
  ./configure \
  --host=$WGET_MINGW_HOST \
  --prefix="$INSTALL_PATH" \
@@ -358,25 +441,25 @@ make -j $CORE
 make install
 (($? != 0)) && { printf '%s\n' "[wget gnutls] make install"; exit 1; }
 mkdir "$INSTALL_PATH"/wget-gnutls
-cp "$INSTALL_PATH"/bin/wget.exe "$INSTALL_PATH"/wget-gnutls/wget-gnutls-x64.exe
-$MINGW_STRIP_TOOL "$INSTALL_PATH"/wget-gnutls/wget-gnutls-x64.exe
+cp "$INSTALL_PATH"/bin/wget.exe "$INSTALL_PATH"/wget-gnutls/wget-gnutls$EXE_SUFFIX
+$MINGW_STRIP_TOOL "$INSTALL_PATH"/wget-gnutls/wget-gnutls$EXE_SUFFIX
 # -----------------------------------------------------------------------------
 # Build wget (openssl)
 # -----------------------------------------------------------------------------
 make clean
 cp ../../windows-openssl.diff .
 patch src/openssl.c < windows-openssl.diff
-CFLAGS="-I$INSTALL_PATH/include -DCARES_STATICLIB=1 -DPCRE2_STATIC=1 -DNDEBUG -O2 -march=$WGET_ARCH -mtune=generic -Derror=rpl_error" \
+CFLAGS="-I$INSTALL_PATH/include $WGET_EXTRA_CFLAGS -DCARES_STATICLIB=1 -DPCRE2_STATIC=1 -DNDEBUG -O2 -march=$WGET_ARCH -mtune=generic -Derror=rpl_error" \
  LDFLAGS="-L$INSTALL_PATH/lib -static -static-libgcc" \
  OPENSSL_CFLAGS=$CFLAGS \
- OPENSSL_LIBS="-L$INSTALL_PATH/lib64 -lcrypto -lssl -lbcrypt" \
+ OPENSSL_LIBS="-L$INSTALL_PATH/$OPENSSL_LIB_DIR -lcrypto -lssl -lbcrypt" \
  LIBPSL_CFLAGS=$CFLAGS \
  LIBPSL_LIBS="-L$INSTALL_PATH/lib -lpsl" \
  CARES_CFLAGS=$CFLAGS \
  CARES_LIBS="-L$INSTALL_PATH/lib -lcares" \
  PCRE2_CFLAGS=$CFLAGS \
  PCRE2_LIBS="-L$INSTALL_PATH/lib -lpcre2-8"  \
- LIBS="-L$INSTALL_PATH/lib -L$INSTALL_PATH/lib64 -lidn2 -lpsl -liphlpapi -lcares -lunistring -liconv -lpcre2-8 -lgpg-error -lcrypto -lssl -lz -lcrypt32 -lintl" \
+ LIBS="-L$INSTALL_PATH/lib -L$INSTALL_PATH/$OPENSSL_LIB_DIR $WGET_EXTRA_LIBS_OPENSSL -lidn2 -lpsl -liphlpapi -lcares -lunistring -liconv -lpcre2-8 -lgpg-error -lcrypto -lssl -lz -lcrypt32 -lintl" \
  ./configure \
  --host=$WGET_MINGW_HOST \
  --prefix="$INSTALL_PATH" \
@@ -397,5 +480,6 @@ make -j $CORE
 make install
 (($? != 0)) && { printf '%s\n' "[wget openssl] make install"; exit 1; }
 mkdir "$INSTALL_PATH"/wget-openssl
-cp "$INSTALL_PATH"/bin/wget.exe "$INSTALL_PATH"/wget-openssl/wget-openssl-x64.exe
-$MINGW_STRIP_TOOL "$INSTALL_PATH"/wget-openssl/wget-openssl-x64.exe
+cp "$INSTALL_PATH"/bin/wget.exe "$INSTALL_PATH"/wget-openssl/wget-openssl$EXE_SUFFIX
+$MINGW_STRIP_TOOL "$INSTALL_PATH"/wget-openssl/wget-openssl$EXE_SUFFIX
+cd "$ROOT_DIR" && exit 0
