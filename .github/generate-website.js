@@ -540,7 +540,7 @@ async function generateSite() {
                     <div class="option-group">
                         <label class="option-label">Architecture</label>
                         <div class="option-buttons">
-                            <button class="option-btn" data-option="arch" data-value="x64">x64 (64-bit)</button>
+                            <button class="option-btn selected" data-option="arch" data-value="x64">x64 (64-bit)</button>
                             <button class="option-btn" data-option="arch" data-value="x86">x86 (32-bit)</button>
                         </div>
                     </div>
@@ -548,7 +548,7 @@ async function generateSite() {
                     <div class="option-group">
                         <label class="option-label">SSL Library</label>
                         <div class="option-buttons">
-                            <button class="option-btn" data-option="ssl" data-value="gnutls">GnuTLS</button>
+                            <button class="option-btn selected" data-option="ssl" data-value="gnutls">GnuTLS</button>
                             <button class="option-btn" data-option="ssl" data-value="openssl">OpenSSL</button>
                         </div>
                     </div>
@@ -587,13 +587,19 @@ async function generateSite() {
             const loadingState = document.getElementById('loadingState');
 
             const selections = {
-                arch: null,
-                ssl: null
+                arch: 'x64',
+                ssl: 'gnutls'
             };
             
             const resetModal = () => {
                 modal.classList.remove('active');
                 document.body.style.overflow = '';
+                // Reset to default selections
+                document.querySelectorAll('[data-value="x64"], [data-value="gnutls"]').forEach(btn => {
+                    btn.classList.add('selected');
+                });
+                selections.arch = 'x64';
+                selections.ssl = 'gnutls';
             };
 
             downloadBtn.addEventListener('click', () => {
@@ -657,13 +663,6 @@ async function generateSite() {
                 setTimeout(() => {
                     loadingState.style.display = 'none';
                     modalBody.style.display = 'block';
-                    modal.classList.remove('active');
-                    
-                    // Reset selections
-                    optionBtns.forEach(btn => btn.classList.remove('selected'));
-                    selections.arch = null;
-                    selections.ssl = null;
-                    confirmDownloadBtn.disabled = true;
                     resetModal();
                 }, 2000)
             });
