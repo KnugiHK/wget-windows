@@ -394,8 +394,8 @@ const generateHTML = (content) => `
                 grid-template-columns: 1fr;
             }
         }
-		
-		.markdown-alert {
+        
+        .markdown-alert {
             background-color: #f8f9fa;
             border-left: 4px solid #f0ad4e;
             padding: 15px;
@@ -471,74 +471,74 @@ const generateHTML = (content) => `
         <footer>
             <p>Project maintained by <a href="https://github.com/KnugiHK">KnugiHK</a></p>
             <p>Hosted on GitHub Pages</p>
-			<p><small>Last updated: ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</small></p>
+            <p><small>Last updated: ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</small></p>
         </footer>
     </div>
 
     <!-- Download Modal -->
     <div id="downloadModal" class="modal">
         <div class="modal-content">
-				<div class="modal-header">
-					<h2 class="modal-title">Download Wget Binary</h2>
-					<p class="modal-subtitle">Select your preferred architecture and SSL library</p>
-				</div>
-			<div id="modalBody">
-				<div class="option-group">
-					<label class="option-label">Architecture</label>
-					<div class="option-buttons">
-						<button class="option-btn" data-option="arch" data-value="x64">x64 (64-bit)</button>
-						<button class="option-btn" data-option="arch" data-value="x86">x86 (32-bit)</button>
-					</div>
-				</div>
+                <div class="modal-header">
+                    <h2 class="modal-title">Download Wget Binary</h2>
+                    <p class="modal-subtitle">Select your preferred architecture and SSL library</p>
+                </div>
+            <div id="modalBody">
+                <div class="option-group">
+                    <label class="option-label">Architecture</label>
+                    <div class="option-buttons">
+                        <button class="option-btn" data-option="arch" data-value="x64">x64 (64-bit)</button>
+                        <button class="option-btn" data-option="arch" data-value="x86">x86 (32-bit)</button>
+                    </div>
+                </div>
 
-				<div class="option-group">
-					<label class="option-label">SSL Library</label>
-					<div class="option-buttons">
-						<button class="option-btn" data-option="ssl" data-value="gnutls">GnuTLS</button>
-						<button class="option-btn" data-option="ssl" data-value="openssl">OpenSSL</button>
-					</div>
-				</div>
+                <div class="option-group">
+                    <label class="option-label">SSL Library</label>
+                    <div class="option-buttons">
+                        <button class="option-btn" data-option="ssl" data-value="gnutls">GnuTLS</button>
+                        <button class="option-btn" data-option="ssl" data-value="openssl">OpenSSL</button>
+                    </div>
+                </div>
 
-				<div class="modal-footer">
-					<button class="btn btn-secondary" id="cancelBtn">Cancel</button>
-					<button class="btn btn-success" id="confirmDownloadBtn" disabled>Download</button>
-				</div>
-			</div>
-			<div id="loadingState" class="loading" style="display: none;">
-				<div class="spinner"></div>
-				<p>Connecting to GitHub Releases...</p>
-			<p><small>Your download will start shortly.</small></p>
-		</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                    <button class="btn btn-success" id="confirmDownloadBtn" disabled>Download</button>
+                </div>
+            </div>
+            <div id="loadingState" class="loading" style="display: none;">
+                <div class="spinner"></div>
+                <p>Connecting to GitHub Releases...</p>
+            <p><small>Your download will start shortly.</small></p>
+        </div>
         </div>
 
-		
+        
     </div>
-	
-	
+    
+    
 
     <script>
         // Download modal logic
         const downloadBtn = document.getElementById('downloadBtn');
         const modal = document.getElementById('downloadModal');
-		const modalBody = document.getElementById('modalBody');
+        const modalBody = document.getElementById('modalBody');
         const cancelBtn = document.getElementById('cancelBtn');
         const confirmDownloadBtn = document.getElementById('confirmDownloadBtn');
         const optionBtns = document.querySelectorAll('.option-btn');
-		const loadingState = document.getElementById('loadingState');
+        const loadingState = document.getElementById('loadingState');
 
         const selections = {
             arch: null,
             ssl: null
         };
-		
-		const resetModal = () => {
+        
+        const resetModal = () => {
             modal.classList.remove('active');
             document.body.style.overflow = '';
         };
 
         downloadBtn.addEventListener('click', () => {
             modal.classList.add('active');
-			document.body.style.overflow = 'hidden';
+            document.body.style.overflow = 'hidden';
         });
 
         cancelBtn.addEventListener('click', () => {
@@ -550,7 +550,7 @@ const generateHTML = (content) => `
                 resetModal();
             }
         });
-		document.addEventListener('keydown', (e) => {
+        document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && modal.classList.contains('active')) {
                resetModal();
             }
@@ -593,19 +593,19 @@ const generateHTML = (content) => `
             link.click();
             document.body.removeChild(link);
             loadingState.style.display = 'block';
-			modalBody.style.display = 'none';
-			setTimeout(() => {
-				loadingState.style.display = 'none';
-				modalBody.style.display = 'block';
-				modal.classList.remove('active');
-				
-				// Reset selections
-				optionBtns.forEach(btn => btn.classList.remove('selected'));
-				selections.arch = null;
-				selections.ssl = null;
-				confirmDownloadBtn.disabled = true;
-				resetModal();
-			}, 2000)
+            modalBody.style.display = 'none';
+            setTimeout(() => {
+                loadingState.style.display = 'none';
+                modalBody.style.display = 'block';
+                modal.classList.remove('active');
+                
+                // Reset selections
+                optionBtns.forEach(btn => btn.classList.remove('selected'));
+                selections.arch = null;
+                selections.ssl = null;
+                confirmDownloadBtn.disabled = true;
+                resetModal();
+            }, 2000)
         });
     </script>
 </body>
