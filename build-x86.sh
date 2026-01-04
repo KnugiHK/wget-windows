@@ -19,7 +19,7 @@ do
   sudo bash -c "echo 0 > /proc/sys/fs/binfmt_misc/status"
 done
 # -----------------------------------------------------------------------------
-# build gmp
+# Build gmp (No dependencies)
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libgmp.a ]; then
   wget -nc https://ftp.gnu.org/gnu/gmp/gmp-6.3.0.tar.xz
@@ -37,7 +37,7 @@ if [ ! -f "$INSTALL_PATH"/lib/libgmp.a ]; then
   cd ..
 fi
 # -----------------------------------------------------------------------------
-# build nettle
+# Build nettle (Requires GMP)
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libnettle.a ]; then
   wget -nc https://ftp.gnu.org/gnu/nettle/nettle-3.10.2.tar.gz
@@ -58,7 +58,7 @@ if [ ! -f "$INSTALL_PATH"/lib/libnettle.a ]; then
   cd ..
 fi
 # -----------------------------------------------------------------------------
-# build tasn
+# Build tasn (No dependencies)
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libtasn1.a ]; then
   wget -nc https://ftp.gnu.org/gnu/libtasn1/libtasn1-4.20.0.tar.gz
@@ -77,7 +77,7 @@ if [ ! -f "$INSTALL_PATH"/lib/libtasn1.a ]; then
   cd ..
 fi
 # -----------------------------------------------------------------------------
-# build idn2
+# Build idn2 (No dependencies)
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libidn2.a ]; then
   wget -nc https://ftp.gnu.org/gnu/libidn/libidn2-2.3.8.tar.gz
@@ -96,7 +96,7 @@ if [ ! -f "$INSTALL_PATH"/lib/libidn2.a ]; then
   cd ..
 fi
 # -----------------------------------------------------------------------------
-# build unistring
+# Build unistring (No dependencies)
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libunistring.a ]; then
   wget -nc https://ftp.gnu.org/gnu/libunistring/libunistring-1.4.1.tar.gz
@@ -114,7 +114,7 @@ if [ ! -f "$INSTALL_PATH"/lib/libunistring.a ]; then
   cd ..
 fi
 # -----------------------------------------------------------------------------
-# build gnutls
+# Build gnutls (Requires GMP, nettle, tasn1, idn2)
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libgnutls.a ]; then
   wget -nc https://www.gnupg.org/ftp/gcrypt/gnutls/v3.8/gnutls-3.8.11.tar.xz
@@ -151,7 +151,7 @@ if [ ! -f "$INSTALL_PATH"/lib/libgnutls.a ]; then
   cd ..
 fi
 # -----------------------------------------------------------------------------
-# build cares
+# Build cares (No dependencies)
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libcares.a ]; then
   wget -nc https://github.com/c-ares/c-ares/releases/download/v1.34.6/c-ares-1.34.6.tar.gz
@@ -173,7 +173,7 @@ if [ ! -f "$INSTALL_PATH"/lib/libcares.a ]; then
   cd ..
 fi
 # -----------------------------------------------------------------------------
-# build iconv
+# Build iconv (No dependencies)
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libiconv.a ]; then
   wget -nc https://ftp.gnu.org/gnu/libiconv/libiconv-1.18.tar.gz
@@ -192,7 +192,7 @@ if [ ! -f "$INSTALL_PATH"/lib/libiconv.a ]; then
   cd ..
 fi
 # -----------------------------------------------------------------------------
-# build psl
+# Build psl (Requires idn2, unistring, iconv)
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libpsl.a ]; then
   wget -nc https://github.com/rockdaboot/libpsl/releases/download/0.21.5/libpsl-0.21.5.tar.gz
@@ -219,7 +219,7 @@ if [ ! -f "$INSTALL_PATH"/lib/libpsl.a ]; then
   cd ..
 fi
 # -----------------------------------------------------------------------------
-# build pcre2
+# Build pcre2 (No dependencies)
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libpcre2-8.a ]; then
   wget -nc https://github.com/PCRE2Project/pcre2/releases/download/pcre2-10.47/pcre2-10.47.tar.gz
@@ -238,7 +238,7 @@ if [ ! -f "$INSTALL_PATH"/lib/libpcre2-8.a ]; then
   cd ..
 fi
 # -----------------------------------------------------------------------------
-# build gpg-error
+# Build gpg-error (No dependencies)
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libgpg-error.a ]; then
   wget -nc https://www.gnupg.org/ftp/gcrypt/libgpg-error/libgpg-error-1.58.tar.bz2
@@ -258,7 +258,7 @@ if [ ! -f "$INSTALL_PATH"/lib/libgpg-error.a ]; then
   cd ..
 fi
 # -----------------------------------------------------------------------------
-# build zlib
+# Build zlib (No dependencies)
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libz.a ]; then
   wget -nc https://github.com/madler/zlib/releases/download/v1.3.1/zlib-1.3.1.tar.gz
@@ -273,7 +273,7 @@ if [ ! -f "$INSTALL_PATH"/lib/libz.a ]; then
   cd ..
 fi
 # -----------------------------------------------------------------------------
-# build gettext (provides libintl for NLS)
+# Build gettext (provides libintl for NLS, requires iconv)
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libintl.a ]; then
   wget -nc https://ftp.gnu.org/gnu/gettext/gettext-0.26.tar.gz
@@ -300,7 +300,7 @@ if [ ! -f "$INSTALL_PATH"/lib/libintl.a ]; then
   cd ../..
 fi
 # -----------------------------------------------------------------------------
-# build openssl
+# Build openssl (Requires zlib)
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libssl.a ]; then
   wget -nc https://github.com/openssl/openssl/releases/download/openssl-3.5.4/openssl-3.5.4.tar.gz
@@ -323,7 +323,7 @@ if [ ! -f "$INSTALL_PATH"/lib/libssl.a ]; then
 cd ..
 fi
 # -----------------------------------------------------------------------------
-# build wget (gnuTLS)
+# Build wget (gnuTLS)
 # -----------------------------------------------------------------------------
 wget -nc https://ftp.gnu.org/gnu/wget/wget-1.24.5.tar.gz
 tar -xf wget-1.24.5.tar.gz
@@ -362,7 +362,7 @@ mkdir "$INSTALL_PATH"/wget-gnutls
 cp "$INSTALL_PATH"/bin/wget.exe "$INSTALL_PATH"/wget-gnutls/wget-gnutls-x86.exe
 $MINGW_STRIP_TOOL "$INSTALL_PATH"/wget-gnutls/wget-gnutls-x86.exe
 # -----------------------------------------------------------------------------
-# build wget (openssl)
+# Build wget (openssl)
 # -----------------------------------------------------------------------------
 make clean
 cp ../../windows-openssl.diff .
