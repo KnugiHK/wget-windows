@@ -594,6 +594,7 @@ async function generateSite() {
             const resetModal = () => {
                 modal.classList.remove('active');
                 document.body.style.overflow = '';
+                optionBtns.forEach(btn => btn.classList.remove('selected'));
                 // Reset to default selections
                 document.querySelectorAll('[data-value="x64"], [data-value="gnutls"]').forEach(btn => {
                     btn.classList.add('selected');
