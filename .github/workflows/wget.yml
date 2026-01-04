@@ -16,6 +16,8 @@ jobs:
   build-x64:
     name: Build x64
     runs-on: ubuntu-24.04
+    outputs:
+      WGET_VERSION: ${{ steps.get_version.outputs.VERSION }}
     steps:
       - uses: actions/checkout@v6
 
@@ -28,6 +30,9 @@ jobs:
         run: |
           x86_64-w64-mingw32-gcc --version
           ./build.sh x64
+          VERSION=$(grep -Po '(?<=wget-)\d+\.\d{2}\.\d+' build.sh | uniq)
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "Extracted: $VERSION"
 
       - name: Attest x64 Binaries
         uses: actions/attest-build-provenance@v3
@@ -75,11 +80,38 @@ jobs:
           path: |
             build-wget-x86/install/wget-gnutls/wget-gnutls-x86.exe
             build-wget-x86/install/wget-openssl/wget-openssl-x86.exe
+   
+  test-windows:
+    name: Test Binaries on Windows
+    needs: [build-x64, build-x86]
+    runs-on: windows-latest
+    env:
+      WGET_VERSION: ${{ needs.build-x64.outputs.wget_version }}
+      PYTHONUTF8: 1
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.x'
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v6
+        with:
+          path: ./test-bins
+
+      - name: Run Python Tests
+        shell: pwsh
+        run: |
+          Get-ChildItem -Path ./test-bins -Filter *.exe -Recurse | Move-Item -Destination .
+          $executables = Get-ChildItem -Name *.exe
+          python wget_tests.py $executables
 
   # --- Release Job ---
   release:
     name: Create Release
-    needs: [build-x64, build-x86]
+    needs: [build-x64, build-x86, test-windows]
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/v')
     permissions:
