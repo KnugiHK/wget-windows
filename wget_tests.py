@@ -405,13 +405,8 @@ def test_large_file_resume_and_hash(wget_path):
     port = server.start()
     url = server.get_url()
 
-    # Pre-calculate the expected hash of 3GB of zeros
-    # Optimization: update a hash object with a known block of zeros multiple times
-    h = hashlib.sha256()
-    block = b'\x00' * 1024 * 1024  # 1MB
-    for _ in range(3 * 1024):      # 3072 MB = 3GB
-        h.update(block)
-    expected_hash = h.hexdigest()
+    # Pre-calculated the expected hash of 3GB of zeros
+    expected_hash = "305b66a59d15b252092fbda9d09711230c429f351897cbd430e7b55a35fd3b97"
 
     with tempfile.TemporaryDirectory() as tmpdir:
         output_file = os.path.join(tmpdir, '3gb_test.dat')
