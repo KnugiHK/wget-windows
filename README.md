@@ -40,8 +40,7 @@ To build Wget for Windows on WSL 1 or 2 (Debian/Ubuntu), please follow these ste
 
 ```bash
 sudo apt-get install -y mingw-w64 mingw-w64-tools mingw-w64-i686-dev gcc make m4 pkg-config automake gettext
-git clone https://github.com/KnugiHK/wget-on-windows
-cd wget-on-windows
+git clone https://github.com/KnugiHK/wget-on-windows && cd wget-on-windows
 ./build.sh
 ```
 
