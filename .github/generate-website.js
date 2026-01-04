@@ -120,8 +120,6 @@ const generateHTML = (content) => `
         .btn:hover {
             transform: translateY(-1px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            color: #FFFFFF;
-            text-decoration: none;
         }
 
         .btn-primary {
@@ -136,6 +134,11 @@ const generateHTML = (content) => `
 
         .btn-success:hover {
             background: var(--success-hover);
+        }
+
+        a.btn:hover {
+            color: #FFFFFF !important;
+            text-decoration: none !important;
         }
 
         /* Modal styles */
