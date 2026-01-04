@@ -27,7 +27,7 @@ jobs:
       - name: Build wget 64-bit
         run: |
           x86_64-w64-mingw32-gcc --version
-          ./build.sh
+          ./build.sh x64
 
       - name: Attest x64 Binaries
         uses: actions/attest-build-provenance@v3
@@ -59,7 +59,7 @@ jobs:
       - name: Build wget 32-bit
         run: |
           i686-w64-mingw32-gcc --version
-          ./build-x86.sh
+          ./build.sh x86
 
       - name: Attest x86 Binaries
         uses: actions/attest-build-provenance@v3
