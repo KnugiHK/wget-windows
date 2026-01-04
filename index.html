@@ -469,8 +469,14 @@
 <p>To learn how to use Wget, please refer to the official GNU Wget manual by clicking the link below.</p>
 <p><a href="https://www.gnu.org/software/wget/manual/wget.html">https://www.gnu.org/software/wget/manual/wget.html</a></p>
 <h3>Build Environment</h3>
-<p>Wget has been built using GitHub Actions and cross-compiled with mingw64 on Ubuntu. It is completely safe to use and free from viruses.</p>
-<p>All the necessary libraries have been <strong>statically linked</strong>, so there is no need to use any third-party DLL.</p>
+<ul>
+<li><p><strong>Native Windows Trust Store Support</strong>: Wget has been built using GitHub Actions and cross-compiled with mingw64 on Ubuntu. It is completely safe to use and free from viruses.</p>
+</li>
+<li><p><strong>Statically Linked</strong>: All the necessary libraries have been <strong>statically linked</strong>, so there is no need to use any third-party DLL.</p>
+</li>
+<li><p><strong>Native Windows Trust Store Support</strong>: Unlike standard OpenSSL builds that require a manual <code>cert.pem</code> file, this build includes a custom patch to automatically trust the Windows Certificate Store.</p>
+</li>
+</ul>
 <h3>Wget features</h3>
 <p>The Windows version of Wget includes all features of Wget except for NLS (the multi-language version) and Metalink.</p>
 <div class="markdown-alert markdown-alert-important">
