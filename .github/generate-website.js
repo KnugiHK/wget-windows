@@ -523,7 +523,7 @@ async function generateSite() {
             </main>
 
             <footer>
-                <p>Project maintained by <a href="https://github.com/KnugiHK">KnugiHK</a></p>
+                <p>Project maintained by <a href="https://knugi.com/">KnugiHK</a></p>
                 <p>Licensed under GPLv3</p>
                 <p><small>Last updated: ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</small></p>
             </footer>
