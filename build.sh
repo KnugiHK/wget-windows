@@ -453,9 +453,9 @@ fi
 # Build wget (gnuTLS)
 # -----------------------------------------------------------------------------
 fetch_src "$WGET_URL"
+rm -rf "wget-${WGET_VER}"
 tar -xf "$DOWNLOAD_DIR/wget-${WGET_VER}.tar.gz"
-cd wget-${WGET_VER} || exit
-make clean
+cd "wget-${WGET_VER}"
 # Force fcntl to 'no' because MinGW headers lack POSIX constants like F_SETFD,
 # causing Gnulib's replacement wrapper (rpl_fcntl) to fail during compilation.
 CFLAGS="-I$INSTALL_PATH/include $WGET_EXTRA_CFLAGS -DGNUTLS_INTERNAL_BUILD=1 -DCARES_STATICLIB=1 -DPCRE2_STATIC=1 -DNDEBUG -O2 -flto -march=$WGET_ARCH -mtune=generic -Derror=rpl_error" \
@@ -493,7 +493,7 @@ $MINGW_STRIP_TOOL "$INSTALL_PATH"/wget-gnutls/wget-gnutls$EXE_SUFFIX
 # -----------------------------------------------------------------------------
 cd ..
 rm -rf "wget-${WGET_VER}"
-tar -xf "wget-${WGET_VER}.tar.gz"
+tar -xf "$DOWNLOAD_DIR/wget-${WGET_VER}.tar.gz"
 cd "wget-${WGET_VER}"
 cp ../../windows-openssl.diff .
 patch src/openssl.c < windows-openssl.diff
