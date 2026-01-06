@@ -133,6 +133,17 @@ fi
 
 export CORE=$(nproc)
 
+set -e
+
+abort() {
+    echo "====================================================="
+    echo "BUILD FAILED!"
+    echo "Failed at: $1"
+    echo "Directory: $(pwd)"
+    echo "====================================================="
+    exit 1
+}
+
 # -----------------------------------------------------------------------------
 # Directory & Download Setup
 # -----------------------------------------------------------------------------
@@ -166,12 +177,10 @@ if [ ! -f "$INSTALL_PATH"/lib/libgmp.a ]; then
    --host=$WGET_MINGW_HOST \
    --disable-shared \
    --prefix="$INSTALL_PATH" \
-   CC_FOR_BUILD=gcc
-  (($? != 0)) && { printf '%s\n' "[gmp] configure failed"; exit 1; }
-  make -j $CORE
-  (($? != 0)) && { printf '%s\n' "[gmp] make failed"; exit 1; }
-  make install
-  (($? != 0)) && { printf '%s\n' "[gmp] make install"; exit 1; }
+   CC_FOR_BUILD=gcc \
+  || abort "[gmp] configure failed"
+  make -j $CORE || abort "[gmp] make failed"
+  make install || abort "[gmp] make install"
   cd ..
 fi
 # -----------------------------------------------------------------------------
@@ -187,12 +196,10 @@ if [ ! -f "$INSTALL_PATH"/lib/libnettle.a ]; then
   --host=$WGET_MINGW_HOST \
   --disable-shared \
   --disable-documentation \
-  --prefix="$INSTALL_PATH"
-  (($? != 0)) && { printf '%s\n' "[nettle] configure failed"; exit 1; }
-  make -j $CORE
-  (($? != 0)) && { printf '%s\n' "[nettle] make failed"; exit 1; }
-  make install
-  (($? != 0)) && { printf '%s\n' "[nettle] make install"; exit 1; }
+  --prefix="$INSTALL_PATH" \
+  || abort "[nettle] configure failed"
+  make -j $CORE || abort "[nettle] make failed"
+  make install || abort "[nettle] make install"
   cd ..
 fi
 # -----------------------------------------------------------------------------
@@ -206,12 +213,10 @@ if [ ! -f "$INSTALL_PATH"/lib/libtasn1.a ]; then
    --host=$WGET_MINGW_HOST \
    --disable-shared \
    --disable-doc \
-   --prefix="$INSTALL_PATH"
-  (($? != 0)) && { printf '%s\n' "[tasn] configure failed"; exit 1; }
-  make -j $CORE
-  (($? != 0)) && { printf '%s\n' "[tasn] make failed"; exit 1; }
-  make install
-  (($? != 0)) && { printf '%s\n' "[tasn] make install"; exit 1; }
+   --prefix="$INSTALL_PATH" \
+  || abort "[tasn] configure failed"
+  make -j $CORE || abort "[tasn] make failed"
+  make install || abort "[tasn] make install"
   cd ..
 fi
 # -----------------------------------------------------------------------------
@@ -225,12 +230,10 @@ if [ ! -f "$INSTALL_PATH"/lib/libidn2.a ]; then
   --host=$WGET_MINGW_HOST \
   --disable-shared \
   --disable-doc \
-  --prefix="$INSTALL_PATH"
-  (($? != 0)) && { printf '%s\n' "[idn2] configure failed"; exit 1; }
-  make -j $CORE
-  (($? != 0)) && { printf '%s\n' "[idn2] make failed"; exit 1; }
-  make install
-  (($? != 0)) && { printf '%s\n' "[idn2] make install"; exit 1; }
+  --prefix="$INSTALL_PATH" \
+  || abort "[idn2] configure failed"
+  make -j $CORE || abort "[idn2] make failed"
+  make install || abort "[idn2] make install"
   cd ..
 fi
 # -----------------------------------------------------------------------------
@@ -243,12 +246,10 @@ if [ ! -f "$INSTALL_PATH"/lib/libunistring.a ]; then
   ./configure \
   --host=$WGET_MINGW_HOST \
   --disable-shared \
-  --prefix="$INSTALL_PATH"
-  (($? != 0)) && { printf '%s\n' "[unistring] configure failed"; exit 1; }
-  make -j $CORE
-  (($? != 0)) && { printf '%s\n' "[unistring] make failed"; exit 1; }
-  make install
-  (($? != 0)) && { printf '%s\n' "[unistring] make install"; exit 1; }
+  --prefix="$INSTALL_PATH" \
+  || abort "[unistring] configure failed"
+  make -j $CORE || abort "[unistring] make failed"
+  make install || abort "[unistring] make install"
   cd ..
 fi
 # -----------------------------------------------------------------------------
@@ -280,12 +281,10 @@ if [ ! -f "$INSTALL_PATH"/lib/libgnutls.a ]; then
   --disable-tests \
   --disable-doc \
   --disable-shared \
-  --enable-static
-  (($? != 0)) && { printf '%s\n' "[gnutls] configure failed"; exit 1; }
-  make -j $CORE
-  (($? != 0)) && { printf '%s\n' "[gnutls] make failed"; exit 1; }
-  make install
-  (($? != 0)) && { printf '%s\n' "[gnutls] make install"; exit 1; }
+  --enable-static \
+  || abort "[gnutls] configure failed"
+  make -j $CORE || abort "[gnutls] make failed"
+  make install || abort "[gnutls] make install"
   cd ..
 fi
 # -----------------------------------------------------------------------------
@@ -302,12 +301,10 @@ if [ ! -f "$INSTALL_PATH"/lib/libcares.a ]; then
   --prefix="$INSTALL_PATH" \
   --enable-static \
   --disable-tests \
-  --disable-debug
-  (($? != 0)) && { printf '%s\n' "[cares] configure failed"; exit 1; }
-  make -j $CORE
-  (($? != 0)) && { printf '%s\n' "[cares] make failed"; exit 1; }
-  make install
-  (($? != 0)) && { printf '%s\n' "[cares] make install"; exit 1; }
+  --disable-debug \
+  || abort "[cares] configure failed"
+  make -j $CORE || abort "[cares] make failed"
+  make install || abort "[cares] make install"
   cd ..
 fi
 # -----------------------------------------------------------------------------
@@ -321,12 +318,10 @@ if [ ! -f "$INSTALL_PATH"/lib/libiconv.a ]; then
   --host=$WGET_MINGW_HOST \
   --disable-shared \
   --prefix="$INSTALL_PATH" \
-  --enable-static
-  (($? != 0)) && { printf '%s\n' "[iconv] configure failed"; exit 1; }
-  make -j $CORE
-  (($? != 0)) && { printf '%s\n' "[iconv] make failed"; exit 1; }
-  make install
-  (($? != 0)) && { printf '%s\n' "[iconv] make install"; exit 1; }
+  --enable-static \
+  || abort "[iconv] configure failed"
+  make -j $CORE || abort "[iconv] make failed"
+  make install || abort "[iconv] make install"
   cd ..
 fi
 # -----------------------------------------------------------------------------
@@ -348,12 +343,10 @@ if [ ! -f "$INSTALL_PATH"/lib/libpsl.a ]; then
   --disable-gtk-doc \
   --enable-builtin=libidn2 \
   --enable-runtime=libidn2 \
-  --with-libiconv-prefix="$INSTALL_PATH"
-  (($? != 0)) && { printf '%s\n' "[psl] configure failed"; exit 1; }
-  make -j $CORE
-  (($? != 0)) && { printf '%s\n' "[psl] make failed"; exit 1; }
-  make install
-  (($? != 0)) && { printf '%s\n' "[psl] make install"; exit 1; }
+  --with-libiconv-prefix="$INSTALL_PATH" \
+  || abort "[psl] configure failed"
+  make -j $CORE  || abort "[psl] make failed"
+  make install || abort "[psl] make install"
   cd ..
 fi
 # -----------------------------------------------------------------------------
@@ -367,12 +360,10 @@ if [ ! -f "$INSTALL_PATH"/lib/libpcre2-8.a ]; then
   --host=$WGET_MINGW_HOST \
   --disable-shared \
   --prefix="$INSTALL_PATH" \
-  --enable-static
-  (($? != 0)) && { printf '%s\n' "[pcre2] configure failed"; exit 1; }
-  make -j $CORE
-  (($? != 0)) && { printf '%s\n' "[pcre2] make failed"; exit 1; }
-  make install
-  (($? != 0)) && { printf '%s\n' "[pcre2] make install"; exit 1; }
+  --enable-static \
+  || abort "[pcre2] configure failed"
+  make -j $CORE || abort "[pcre2] make failed"
+  make install || abort "[pcre2] make install"
   cd ..
 fi
 # -----------------------------------------------------------------------------
@@ -387,12 +378,10 @@ if [ ! -f "$INSTALL_PATH"/lib/libgpg-error.a ]; then
   --disable-shared \
   --prefix="$INSTALL_PATH" \
   --enable-static \
-  --disable-doc
-  (($? != 0)) && { printf '%s\n' "[gpg-error] configure failed"; exit 1; }
-  make -j $CORE
-  (($? != 0)) && { printf '%s\n' "[gpg-error] make failed"; exit 1; }
-  make install
-  (($? != 0)) && { printf '%s\n' "[gpg-error] make install"; exit 1; }
+  --disable-doc \
+  || abort "[gpg-error] configure failed"
+  make -j $CORE || abort "[gpg-error] make failed"
+  make install || abort "[gpg-error] make install"
   cd ..
 fi
 # -----------------------------------------------------------------------------
@@ -402,12 +391,13 @@ if [ ! -f "$INSTALL_PATH"/lib/libz.a ]; then
   fetch_src "$ZLIB_URL"
   tar -xf "$DOWNLOAD_DIR/zlib-${ZLIB_VER}.tar.gz"
   cd zlib-${ZLIB_VER} || exit
-  env $ZLIB_CONFIG_ENV ./configure $ZLIB_CONFIG_ARGS --static --prefix="$INSTALL_PATH"
-  (($? != 0)) && { printf '%s\n' "[zlib] configure failed"; exit 1; }
-  make -j $CORE
-  (($? != 0)) && { printf '%s\n' "[zlib] make failed"; exit 1; }
-  make install
-  (($? != 0)) && { printf '%s\n' "[zlib] make install"; exit 1; }
+  env $ZLIB_CONFIG_ENV  \
+  ./configure $ZLIB_CONFIG_ARGS  \
+  --static \
+  --prefix="$INSTALL_PATH" \
+  || abort "[zlib] configure failed"
+  make -j $CORE || abort "[zlib] make failed"
+  make install || abort "[zlib] make install"
   cd ..
 fi
 # -----------------------------------------------------------------------------
@@ -429,12 +419,10 @@ if [ ! -f "$INSTALL_PATH"/lib/libintl.a ]; then
   --disable-libasprintf \
   --enable-nls \
   --with-libiconv-prefix="$INSTALL_PATH" \
-  --enable-relocatable
-  (($? != 0)) && { printf '%s\n' "[gettext-runtime] configure failed"; exit 1; }
-  make -j $CORE
-  (($? != 0)) && { printf '%s\n' "[gettext-runtime] make failed"; exit 1; }
-  make install
-  (($? != 0)) && { printf '%s\n' "[gettext-runtime] make install"; exit 1; }
+  --enable-relocatable \
+  || abort "[gettext-runtime] configure failed"
+  make -j $CORE || abort "[gettext-runtime] make failed"
+  make install || abort "[gettext-runtime] make install"
   cd ../..
 fi
 # -----------------------------------------------------------------------------
@@ -455,9 +443,10 @@ if [ ! -f "$INSTALL_PATH/$OPENSSL_LIB_DIR/libssl.a" ]; then
   enable-asm \
   no-tests \
   --with-zlib-include="$INSTALL_PATH" \
-  --with-zlib-lib="$INSTALL_PATH"/lib/libz.a
- make -j $CORE
- make install_sw
+  --with-zlib-lib="$INSTALL_PATH"/lib/libz.a \
+  || abort "[openssl] configure failed"
+ make -j $CORE || abort "[openssl] make failed"
+ make install_sw || abort "[openssl] make install_sw"
  cd ..
 fi
 # -----------------------------------------------------------------------------
@@ -492,12 +481,10 @@ CFLAGS="-I$INSTALL_PATH/include $WGET_EXTRA_CFLAGS -DGNUTLS_INTERNAL_BUILD=1 -DC
  --with-libidn \
  --with-cares \
  --with-libpsl \
-  ac_cv_func_fcntl=no
-(($? != 0)) && { printf '%s\n' "[wget gnutls] configure failed"; exit 1; }
-make -j $CORE
-(($? != 0)) && { printf '%s\n' "[wget gnutls] make failed"; exit 1; }
-make install
-(($? != 0)) && { printf '%s\n' "[wget gnutls] make install"; exit 1; }
+  ac_cv_func_fcntl=no \
+|| abort "[wget gnutls] configure failed"
+make -j $CORE || abort "[wget gnutls] make failed"
+make install || abort "[wget gnutls] make install"
 mkdir "$INSTALL_PATH"/wget-gnutls
 cp "$INSTALL_PATH"/bin/wget.exe "$INSTALL_PATH"/wget-gnutls/wget-gnutls$EXE_SUFFIX
 $MINGW_STRIP_TOOL "$INSTALL_PATH"/wget-gnutls/wget-gnutls$EXE_SUFFIX
@@ -536,12 +523,10 @@ CFLAGS="-I$INSTALL_PATH/include $WGET_EXTRA_CFLAGS -DCARES_STATICLIB=1 -DPCRE2_S
  --with-cares \
  --with-libpsl \
  --with-openssl \
-  ac_cv_func_fcntl=no
-(($? != 0)) && { printf '%s\n' "[wget openssl] configure failed"; exit 1; }
-make -j $CORE
-(($? != 0)) && { printf '%s\n' "[wget openssl] make failed"; exit 1; }
-make install
-(($? != 0)) && { printf '%s\n' "[wget openssl] make install"; exit 1; }
+  ac_cv_func_fcntl=no \
+|| abort "[wget openssl] configure failed"
+make -j $CORE || abort "[wget openssl] make failed"
+make install || abort "[wget openssl] make install"
 mkdir "$INSTALL_PATH"/wget-openssl
 cp "$INSTALL_PATH"/bin/wget.exe "$INSTALL_PATH"/wget-openssl/wget-openssl$EXE_SUFFIX
 $MINGW_STRIP_TOOL "$INSTALL_PATH"/wget-openssl/wget-openssl$EXE_SUFFIX
