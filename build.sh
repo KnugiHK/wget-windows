@@ -9,6 +9,55 @@
 #   ./build.sh x86   (Builds x86 only)
 #   ./build.sh x64   (Builds x64 only)
 
+
+# -----------------------------------------------------------------------------
+# Version & URL Definitions (Centralized Management)
+# -----------------------------------------------------------------------------
+GMP_VER="6.3.0"
+GMP_URL="https://ftp.gnu.org/gnu/gmp/gmp-${GMP_VER}.tar.xz"
+
+NETTLE_VER="3.10.2"
+NETTLE_URL="https://ftp.gnu.org/gnu/nettle/nettle-${NETTLE_VER}.tar.gz"
+
+TASN1_VER="4.20.0"
+TASN1_URL="https://ftp.gnu.org/gnu/libtasn1/libtasn1-${TASN1_VER}.tar.gz"
+
+IDN2_VER="2.3.8"
+IDN2_URL="https://ftp.gnu.org/gnu/libidn/libidn2-${IDN2_VER}.tar.gz"
+
+UNISTRING_VER="1.4.1"
+UNISTRING_URL="https://ftp.gnu.org/gnu/libunistring/libunistring-${UNISTRING_VER}.tar.gz"
+
+GNUTLS_VER="3.8.11"
+GNUTLS_URL="https://www.gnupg.org/ftp/gcrypt/gnutls/v3.8/gnutls-${GNUTLS_VER}.tar.xz"
+
+CARES_VER="1.34.6"
+CARES_URL="https://github.com/c-ares/c-ares/releases/download/v${CARES_VER}/c-ares-${CARES_VER}.tar.gz"
+
+ICONV_VER="1.18"
+ICONV_URL="https://ftp.gnu.org/gnu/libiconv/libiconv-${ICONV_VER}.tar.gz"
+
+PSL_VER="0.21.5"
+PSL_URL="https://github.com/rockdaboot/libpsl/releases/download/${PSL_VER}/libpsl-${PSL_VER}.tar.gz"
+
+PCRE2_VER="10.47"
+PCRE2_URL="https://github.com/PCRE2Project/pcre2/releases/download/pcre2-${PCRE2_VER}/pcre2-${PCRE2_VER}.tar.gz"
+
+GPG_ERROR_VER="1.58"
+GPG_ERROR_URL="https://www.gnupg.org/ftp/gcrypt/libgpg-error/libgpg-error-${GPG_ERROR_VER}.tar.bz2"
+
+ZLIB_VER="1.3.1"
+ZLIB_URL="https://github.com/madler/zlib/releases/download/v${ZLIB_VER}/zlib-${ZLIB_VER}.tar.gz"
+
+GETTEXT_VER="0.26"
+GETTEXT_URL="https://ftp.gnu.org/gnu/gettext/gettext-${GETTEXT_VER}.tar.gz"
+
+OPENSSL_VER="3.5.4"
+OPENSSL_URL="https://github.com/openssl/openssl/releases/download/openssl-${OPENSSL_VER}/openssl-${OPENSSL_VER}.tar.gz"
+
+WGET_VER="1.24.5"
+WGET_URL="https://ftp.gnu.org/gnu/wget/wget-${WGET_VER}.tar.gz"
+
 BUILD_ARCH_TYPE=$1
 ROOT_DIR=$PWD
 
@@ -95,9 +144,9 @@ export INSTALL_PATH=$PWD/install
 # Build gmp (No dependencies)
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libgmp.a ]; then
-  wget -nc https://ftp.gnu.org/gnu/gmp/gmp-6.3.0.tar.xz
-  tar -xf gmp-6.3.0.tar.xz
-  cd gmp-6.3.0 || exit
+  wget -nc "$GMP_URL"
+  tar -xf gmp-${GMP_VER}.tar.xz
+  cd gmp-${GMP_VER} || exit
   ./configure \
    --build=$(./config.guess) \
    --host=$WGET_MINGW_HOST \
@@ -115,9 +164,9 @@ fi
 # Build nettle (Requires GMP)
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libnettle.a ]; then
-  wget -nc https://ftp.gnu.org/gnu/nettle/nettle-3.10.2.tar.gz
-  tar -xf nettle-3.10.2.tar.gz
-  cd nettle-3.10.2 || exit
+  wget -nc "$NETTLE_URL"
+  tar -xf nettle-${NETTLE_VER}.tar.gz
+  cd nettle-${NETTLE_VER} || exit
   CFLAGS="-I$INSTALL_PATH/include" \
   LDFLAGS="-L$INSTALL_PATH/lib" \
   ./configure \
@@ -136,9 +185,9 @@ fi
 # Build tasn (No dependencies)
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libtasn1.a ]; then
-  wget -nc https://ftp.gnu.org/gnu/libtasn1/libtasn1-4.20.0.tar.gz
-  tar -xf libtasn1-4.20.0.tar.gz
-  cd libtasn1-4.20.0 || exit
+  wget -nc "$TASN1_URL"
+  tar -xf libtasn1-${TASN1_VER}.tar.gz
+  cd libtasn1-${TASN1_VER} || exit
   ./configure \
    --host=$WGET_MINGW_HOST \
    --disable-shared \
@@ -155,9 +204,9 @@ fi
 # Build idn2 (No dependencies)
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libidn2.a ]; then
-  wget -nc https://ftp.gnu.org/gnu/libidn/libidn2-2.3.8.tar.gz
-  tar -xf libidn2-2.3.8.tar.gz
-  cd libidn2-2.3.8 || exit
+  wget -nc "$IDN2_URL"
+  tar -xf libidn2-${IDN2_VER}.tar.gz
+  cd libidn2-${IDN2_VER} || exit
   ./configure \
   --host=$WGET_MINGW_HOST \
   --disable-shared \
@@ -174,9 +223,9 @@ fi
 # Build unistring (No dependencies)
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libunistring.a ]; then
-  wget -nc https://ftp.gnu.org/gnu/libunistring/libunistring-1.4.1.tar.gz
-  tar -xf libunistring-1.4.1.tar.gz
-  cd libunistring-1.4.1 || exit
+  wget -nc "$UNISTRING_URL"
+  tar -xf libunistring-${UNISTRING_VER}.tar.gz
+  cd libunistring-${UNISTRING_VER} || exit
   ./configure \
   --host=$WGET_MINGW_HOST \
   --disable-shared \
@@ -192,9 +241,9 @@ fi
 # Build gnutls (Requires GMP, nettle, tasn1, idn2)
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libgnutls.a ]; then
-  wget -nc https://www.gnupg.org/ftp/gcrypt/gnutls/v3.8/gnutls-3.8.11.tar.xz
-  tar -xf gnutls-3.8.11.tar.xz
-  cd gnutls-3.8.11 || exit
+  wget -nc "$GNUTLS_URL"
+  tar -xf gnutls-${GNUTLS_VER}.tar.xz
+  cd gnutls-${GNUTLS_VER} || exit
   PKG_CONFIG_PATH="$INSTALL_PATH/lib/pkgconfig" \
   CFLAGS="-I$INSTALL_PATH/include" \
   LDFLAGS="-L$INSTALL_PATH/lib" \
@@ -229,9 +278,9 @@ fi
 # Build cares (No dependencies)
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libcares.a ]; then
-  wget -nc https://github.com/c-ares/c-ares/releases/download/v1.34.6/c-ares-1.34.6.tar.gz
-  tar -xf c-ares-1.34.6.tar.gz
-  cd c-ares-1.34.6 || exit
+  wget -nc "$CARES_URL"
+  tar -xf c-ares-${CARES_VER}.tar.gz
+  cd c-ares-${CARES_VER} || exit
   CPPFLAGS="-DCARES_STATICLIB=1" \
   ./configure \
   --host=$WGET_MINGW_HOST \
@@ -251,9 +300,9 @@ fi
 # Build iconv (No dependencies)
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libiconv.a ]; then
-  wget -nc https://ftp.gnu.org/gnu/libiconv/libiconv-1.18.tar.gz
-  tar -xf libiconv-1.18.tar.gz
-  cd libiconv-1.18 || exit
+  wget -nc "$ICONV_URL"
+  tar -xf libiconv-${ICONV_VER}.tar.gz
+  cd libiconv-${ICONV_VER} || exit
   ./configure \
   --host=$WGET_MINGW_HOST \
   --disable-shared \
@@ -270,9 +319,9 @@ fi
 # Build psl (Requires idn2, unistring, iconv)
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libpsl.a ]; then
-  wget -nc https://github.com/rockdaboot/libpsl/releases/download/0.21.5/libpsl-0.21.5.tar.gz
-  tar -xf libpsl-0.21.5.tar.gz
-  cd libpsl-0.21.5 || exit
+  wget -nc "$PSL_URL"
+  tar -xf libpsl-${PSL_VER}.tar.gz
+  cd libpsl-${PSL_VER} || exit
   CFLAGS="-I$INSTALL_PATH/include" \
   LIBS="-L$INSTALL_PATH/lib -lunistring -lidn2" \
   LIBIDN2_CFLAGS="-I$INSTALL_PATH/include" \
@@ -297,9 +346,9 @@ fi
 # Build pcre2 (No dependencies)
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libpcre2-8.a ]; then
-  wget -nc https://github.com/PCRE2Project/pcre2/releases/download/pcre2-10.47/pcre2-10.47.tar.gz
-  tar -xf pcre2-10.47.tar.gz
-  cd pcre2-10.47 || exit
+  wget -nc  "$PCRE2_URL"
+  tar -xf pcre2-${PCRE2_VER}.tar.gz
+  cd pcre2-${PCRE2_VER} || exit
   ./configure \
   --host=$WGET_MINGW_HOST \
   --disable-shared \
@@ -316,9 +365,9 @@ fi
 # Build gpg-error (No dependencies)
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libgpg-error.a ]; then
-  wget -nc https://www.gnupg.org/ftp/gcrypt/libgpg-error/libgpg-error-1.58.tar.bz2
-  tar -xf libgpg-error-1.58.tar.bz2
-  cd libgpg-error-1.58 || exit
+  wget -nc "$GPG_ERROR_URL"
+  tar -xf libgpg-error-${GPG_ERROR_VER}.tar.bz2
+  cd libgpg-error-${GPG_ERROR_VER} || exit
   ./configure \
   --host=$WGET_MINGW_HOST \
   --disable-shared \
@@ -336,9 +385,9 @@ fi
 # Build zlib (No dependencies)
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libz.a ]; then
-  wget -nc https://github.com/madler/zlib/releases/download/v1.3.1/zlib-1.3.1.tar.gz
-  tar -xf zlib-1.3.1.tar.gz
-  cd zlib-1.3.1 || exit
+  wget -nc "$ZLIB_URL"
+  tar -xf zlib-${ZLIB_VER}.tar.gz
+  cd zlib-${ZLIB_VER} || exit
   env $ZLIB_CONFIG_ENV ./configure $ZLIB_CONFIG_ARGS --static --prefix="$INSTALL_PATH"
   (($? != 0)) && { printf '%s\n' "[zlib] configure failed"; exit 1; }
   make -j $CORE
@@ -351,9 +400,9 @@ fi
 # Build gettext (provides libintl for NLS, requires iconv)
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libintl.a ]; then
-  wget -nc https://ftp.gnu.org/gnu/gettext/gettext-0.26.tar.gz
-  tar -xf gettext-0.26.tar.gz
-  cd gettext-0.26/gettext-runtime || exit
+  wget -nc "$GETTEXT_URL"
+  tar -xf gettext-${GETTEXT_VER}.tar.gz
+  cd gettext-${GETTEXT_VER}/gettext-runtime || exit
   ./configure \
   --host=$WGET_MINGW_HOST \
   --prefix="$INSTALL_PATH" \
@@ -378,9 +427,9 @@ fi
 # Build openssl (Requires zlib)
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH/$OPENSSL_LIB_DIR/libssl.a" ]; then
-  wget -nc https://github.com/openssl/openssl/releases/download/openssl-3.5.4/openssl-3.5.4.tar.gz
-  tar -xf openssl-3.5.4.tar.gz
-  cd openssl-3.5.4 || exit
+  wget -nc "$OPENSSL_URL"
+  tar -xf openssl-${OPENSSL_VER}.tar.gz
+  cd openssl-${OPENSSL_VER} || exit
   ./Configure \
   $OPENSSL_FLAGS \
   --static \
@@ -400,9 +449,9 @@ fi
 # -----------------------------------------------------------------------------
 # Build wget (gnuTLS)
 # -----------------------------------------------------------------------------
-wget -nc https://ftp.gnu.org/gnu/wget/wget-1.24.5.tar.gz
-tar -xf wget-1.24.5.tar.gz
-cd wget-1.24.5 || exit
+wget -nc "$WGET_URL"
+tar -xf wget-${WGET_VER}.tar.gz
+cd wget-${WGET_VER} || exit
 make clean
 # Force fcntl to 'no' because MinGW headers lack POSIX constants like F_SETFD,
 # causing Gnulib's replacement wrapper (rpl_fcntl) to fail during compilation.
