@@ -150,7 +150,7 @@ abort() {
 DOWNLOAD_DIR="$ROOT_DIR/build-wget-downloads"
 mkdir -p "$DOWNLOAD_DIR"
 mkdir -p "$WORK_DIR"
-cd "$WORK_DIR" || exit
+cd "$WORK_DIR"
 mkdir -p install
 export INSTALL_PATH=$PWD/install
 
@@ -171,7 +171,7 @@ fetch_src() {
 if [ ! -f "$INSTALL_PATH"/lib/libgmp.a ]; then
   fetch_src "$GMP_URL"
   tar -xf "$DOWNLOAD_DIR/gmp-${GMP_VER}.tar.xz"
-  cd gmp-${GMP_VER} || exit
+  cd gmp-${GMP_VER}
   ./configure \
    --build=$(./config.guess) \
    --host=$WGET_MINGW_HOST \
@@ -189,7 +189,7 @@ fi
 if [ ! -f "$INSTALL_PATH"/lib/libnettle.a ]; then
   fetch_src "$NETTLE_URL"
   tar -xf "$DOWNLOAD_DIR/nettle-${NETTLE_VER}.tar.gz"
-  cd nettle-${NETTLE_VER} || exit
+  cd nettle-${NETTLE_VER}
   CFLAGS="-I$INSTALL_PATH/include" \
   LDFLAGS="-L$INSTALL_PATH/lib" \
   ./configure \
@@ -208,7 +208,7 @@ fi
 if [ ! -f "$INSTALL_PATH"/lib/libtasn1.a ]; then
   fetch_src "$TASN1_URL"
   tar -xf "$DOWNLOAD_DIR/libtasn1-${TASN1_VER}.tar.gz"
-  cd libtasn1-${TASN1_VER} || exit
+  cd libtasn1-${TASN1_VER}
   ./configure \
    --host=$WGET_MINGW_HOST \
    --disable-shared \
@@ -225,7 +225,7 @@ fi
 if [ ! -f "$INSTALL_PATH"/lib/libidn2.a ]; then
   fetch_src "$IDN2_URL"
   tar -xf "$DOWNLOAD_DIR/libidn2-${IDN2_VER}.tar.gz"
-  cd libidn2-${IDN2_VER} || exit
+  cd libidn2-${IDN2_VER}
   ./configure \
   --host=$WGET_MINGW_HOST \
   --disable-shared \
@@ -242,7 +242,7 @@ fi
 if [ ! -f "$INSTALL_PATH"/lib/libunistring.a ]; then
   fetch_src "$UNISTRING_URL"
   tar -xf "$DOWNLOAD_DIR/libunistring-${UNISTRING_VER}.tar.gz"
-  cd libunistring-${UNISTRING_VER} || exit
+  cd libunistring-${UNISTRING_VER}
   ./configure \
   --host=$WGET_MINGW_HOST \
   --disable-shared \
@@ -258,7 +258,7 @@ fi
 if [ ! -f "$INSTALL_PATH"/lib/libgnutls.a ]; then
   fetch_src "$GNUTLS_URL"
   tar -xf "$DOWNLOAD_DIR/gnutls-${GNUTLS_VER}.tar.xz"
-  cd gnutls-${GNUTLS_VER} || exit
+  cd gnutls-${GNUTLS_VER}
   PKG_CONFIG_PATH="$INSTALL_PATH/lib/pkgconfig" \
   CFLAGS="-I$INSTALL_PATH/include" \
   LDFLAGS="-L$INSTALL_PATH/lib" \
@@ -293,7 +293,7 @@ fi
 if [ ! -f "$INSTALL_PATH"/lib/libcares.a ]; then
   fetch_src "$CARES_URL"
   tar -xf "$DOWNLOAD_DIR/c-ares-${CARES_VER}.tar.gz"
-  cd c-ares-${CARES_VER} || exit
+  cd c-ares-${CARES_VER}
   CPPFLAGS="-DCARES_STATICLIB=1" \
   ./configure \
   --host=$WGET_MINGW_HOST \
@@ -313,7 +313,7 @@ fi
 if [ ! -f "$INSTALL_PATH"/lib/libiconv.a ]; then
   fetch_src "$ICONV_URL"
   tar -xf "$DOWNLOAD_DIR/libiconv-${ICONV_VER}.tar.gz"
-  cd libiconv-${ICONV_VER} || exit
+  cd libiconv-${ICONV_VER}
   ./configure \
   --host=$WGET_MINGW_HOST \
   --disable-shared \
@@ -330,7 +330,7 @@ fi
 if [ ! -f "$INSTALL_PATH"/lib/libpsl.a ]; then
   fetch_src "$PSL_URL"
   tar -xf "$DOWNLOAD_DIR/libpsl-${PSL_VER}.tar.gz"
-  cd libpsl-${PSL_VER} || exit
+  cd libpsl-${PSL_VER}
   CFLAGS="-I$INSTALL_PATH/include" \
   LIBS="-L$INSTALL_PATH/lib -lunistring -lidn2" \
   LIBIDN2_CFLAGS="-I$INSTALL_PATH/include" \
@@ -355,7 +355,7 @@ fi
 if [ ! -f "$INSTALL_PATH"/lib/libpcre2-8.a ]; then
   fetch_src "$PCRE2_URL"
   tar -xf "$DOWNLOAD_DIR/pcre2-${PCRE2_VER}.tar.gz"
-  cd pcre2-${PCRE2_VER} || exit
+  cd pcre2-${PCRE2_VER}
   ./configure \
   --host=$WGET_MINGW_HOST \
   --disable-shared \
@@ -372,7 +372,7 @@ fi
 if [ ! -f "$INSTALL_PATH"/lib/libgpg-error.a ]; then
   fetch_src "$GPG_ERROR_URL"
   tar -xf "$DOWNLOAD_DIR/libgpg-error-${GPG_ERROR_VER}.tar.bz2"
-  cd libgpg-error-${GPG_ERROR_VER} || exit
+  cd libgpg-error-${GPG_ERROR_VER}
   ./configure \
   --host=$WGET_MINGW_HOST \
   --disable-shared \
@@ -390,7 +390,7 @@ fi
 if [ ! -f "$INSTALL_PATH"/lib/libz.a ]; then
   fetch_src "$ZLIB_URL"
   tar -xf "$DOWNLOAD_DIR/zlib-${ZLIB_VER}.tar.gz"
-  cd zlib-${ZLIB_VER} || exit
+  cd zlib-${ZLIB_VER}
   env $ZLIB_CONFIG_ENV  \
   ./configure $ZLIB_CONFIG_ARGS  \
   --static \
@@ -406,7 +406,7 @@ fi
 if [ ! -f "$INSTALL_PATH"/lib/libintl.a ]; then
   fetch_src "$GETTEXT_URL"
   tar -xf "$DOWNLOAD_DIR/gettext-${GETTEXT_VER}.tar.gz"
-  cd gettext-${GETTEXT_VER}/gettext-runtime || exit
+  cd gettext-${GETTEXT_VER}/gettext-runtime
   ./configure \
   --host=$WGET_MINGW_HOST \
   --prefix="$INSTALL_PATH" \
@@ -431,7 +431,7 @@ fi
 if [ ! -f "$INSTALL_PATH/$OPENSSL_LIB_DIR/libssl.a" ]; then
   fetch_src "$OPENSSL_URL"
   tar -xf "$DOWNLOAD_DIR/openssl-${OPENSSL_VER}.tar.gz"
-  cd openssl-${OPENSSL_VER} || exit
+  cd openssl-${OPENSSL_VER}
   ./Configure \
   $OPENSSL_FLAGS \
   --static \
