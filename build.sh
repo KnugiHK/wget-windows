@@ -504,7 +504,10 @@ $MINGW_STRIP_TOOL "$INSTALL_PATH"/wget-gnutls/wget-gnutls$EXE_SUFFIX
 # -----------------------------------------------------------------------------
 # Build wget (openssl)
 # -----------------------------------------------------------------------------
-make clean
+cd ..
+rm -rf "wget-${WGET_VER}"
+tar -xf "wget-${WGET_VER}.tar.gz"
+cd "wget-${WGET_VER}"
 cp ../../windows-openssl.diff .
 patch src/openssl.c < windows-openssl.diff
 # Force fcntl to 'no' because MinGW headers lack POSIX constants like F_SETFD,
