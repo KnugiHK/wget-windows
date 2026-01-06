@@ -469,7 +469,7 @@ cd wget-${WGET_VER} || exit
 make clean
 # Force fcntl to 'no' because MinGW headers lack POSIX constants like F_SETFD,
 # causing Gnulib's replacement wrapper (rpl_fcntl) to fail during compilation.
-CFLAGS="-I$INSTALL_PATH/include $WGET_EXTRA_CFLAGS -DGNUTLS_INTERNAL_BUILD=1 -DCARES_STATICLIB=1 -DPCRE2_STATIC=1 -DNDEBUG -O2 -march=$WGET_ARCH -mtune=generic -Derror=rpl_error" \
+CFLAGS="-I$INSTALL_PATH/include $WGET_EXTRA_CFLAGS -DGNUTLS_INTERNAL_BUILD=1 -DCARES_STATICLIB=1 -DPCRE2_STATIC=1 -DNDEBUG -O2 -flto -march=$WGET_ARCH -mtune=generic -Derror=rpl_error" \
  LDFLAGS="-L$INSTALL_PATH/lib -static -static-libgcc" \
  GNUTLS_CFLAGS=$CFLAGS \
  GNUTLS_LIBS="-L$INSTALL_PATH/lib -lgnutls -lbcrypt -lncrypt" \
@@ -512,7 +512,7 @@ cp ../../windows-openssl.diff .
 patch src/openssl.c < windows-openssl.diff
 # Force fcntl to 'no' because MinGW headers lack POSIX constants like F_SETFD,
 # causing Gnulib's replacement wrapper (rpl_fcntl) to fail during compilation.
-CFLAGS="-I$INSTALL_PATH/include $WGET_EXTRA_CFLAGS -DCARES_STATICLIB=1 -DPCRE2_STATIC=1 -DNDEBUG -O2 -march=$WGET_ARCH -mtune=generic -Derror=rpl_error" \
+CFLAGS="-I$INSTALL_PATH/include $WGET_EXTRA_CFLAGS -DCARES_STATICLIB=1 -DPCRE2_STATIC=1 -DNDEBUG -O2 -flto -march=$WGET_ARCH -mtune=generic -Derror=rpl_error" \
  LDFLAGS="-L$INSTALL_PATH/lib -static -static-libgcc" \
  OPENSSL_CFLAGS=$CFLAGS \
  OPENSSL_LIBS="-L$INSTALL_PATH/$OPENSSL_LIB_DIR -lcrypto -lssl -lbcrypt" \
