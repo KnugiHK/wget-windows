@@ -353,7 +353,7 @@ fi
 # Build pcre2 (No dependencies)
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libpcre2-8.a ]; then
-  wget -nc  "$PCRE2_URL"
+  fetch_src "$PCRE2_URL"
   tar -xf "$DOWNLOAD_DIR/pcre2-${PCRE2_VER}.tar.gz"
   cd pcre2-${PCRE2_VER} || exit
   ./configure \
