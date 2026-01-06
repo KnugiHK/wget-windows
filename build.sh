@@ -134,18 +134,32 @@ fi
 export CORE=$(nproc)
 
 # -----------------------------------------------------------------------------
-# Directory Setup
+# Directory & Download Setup
 # -----------------------------------------------------------------------------
+DOWNLOAD_DIR="$ROOT_DIR/build-wget-downloads"
+mkdir -p "$DOWNLOAD_DIR"
 mkdir -p "$WORK_DIR"
 cd "$WORK_DIR" || exit
 mkdir -p install
 export INSTALL_PATH=$PWD/install
+
+# Helper to fetch from cache or download
+fetch_src() {
+    local url=$1
+    local filename=$(basename "$url")
+    if [ ! -f "$DOWNLOAD_DIR/$filename" ]; then
+        echo "downloading $filename..."
+        wget -nc -P "$DOWNLOAD_DIR" "$url"
+	else
+        echo "cache hit: $filename"
+    fi
+}
 # -----------------------------------------------------------------------------
 # Build gmp (No dependencies)
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libgmp.a ]; then
-  wget -nc "$GMP_URL"
-  tar -xf gmp-${GMP_VER}.tar.xz
+  fetch_src "$GMP_URL"
+  tar -xf "$DOWNLOAD_DIR/gmp-${GMP_VER}.tar.xz"
   cd gmp-${GMP_VER} || exit
   ./configure \
    --build=$(./config.guess) \
@@ -164,8 +178,8 @@ fi
 # Build nettle (Requires GMP)
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libnettle.a ]; then
-  wget -nc "$NETTLE_URL"
-  tar -xf nettle-${NETTLE_VER}.tar.gz
+  fetch_src "$NETTLE_URL"
+  tar -xf "$DOWNLOAD_DIR/nettle-${NETTLE_VER}.tar.gz"
   cd nettle-${NETTLE_VER} || exit
   CFLAGS="-I$INSTALL_PATH/include" \
   LDFLAGS="-L$INSTALL_PATH/lib" \
@@ -185,8 +199,8 @@ fi
 # Build tasn (No dependencies)
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libtasn1.a ]; then
-  wget -nc "$TASN1_URL"
-  tar -xf libtasn1-${TASN1_VER}.tar.gz
+  fetch_src "$TASN1_URL"
+  tar -xf "$DOWNLOAD_DIR/libtasn1-${TASN1_VER}.tar.gz"
   cd libtasn1-${TASN1_VER} || exit
   ./configure \
    --host=$WGET_MINGW_HOST \
@@ -204,8 +218,8 @@ fi
 # Build idn2 (No dependencies)
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libidn2.a ]; then
-  wget -nc "$IDN2_URL"
-  tar -xf libidn2-${IDN2_VER}.tar.gz
+  fetch_src "$IDN2_URL"
+  tar -xf "$DOWNLOAD_DIR/libidn2-${IDN2_VER}.tar.gz"
   cd libidn2-${IDN2_VER} || exit
   ./configure \
   --host=$WGET_MINGW_HOST \
@@ -223,8 +237,8 @@ fi
 # Build unistring (No dependencies)
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libunistring.a ]; then
-  wget -nc "$UNISTRING_URL"
-  tar -xf libunistring-${UNISTRING_VER}.tar.gz
+  fetch_src "$UNISTRING_URL"
+  tar -xf "$DOWNLOAD_DIR/libunistring-${UNISTRING_VER}.tar.gz"
   cd libunistring-${UNISTRING_VER} || exit
   ./configure \
   --host=$WGET_MINGW_HOST \
@@ -241,8 +255,8 @@ fi
 # Build gnutls (Requires GMP, nettle, tasn1, idn2)
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libgnutls.a ]; then
-  wget -nc "$GNUTLS_URL"
-  tar -xf gnutls-${GNUTLS_VER}.tar.xz
+  fetch_src "$GNUTLS_URL"
+  tar -xf "$DOWNLOAD_DIR/gnutls-${GNUTLS_VER}.tar.xz"
   cd gnutls-${GNUTLS_VER} || exit
   PKG_CONFIG_PATH="$INSTALL_PATH/lib/pkgconfig" \
   CFLAGS="-I$INSTALL_PATH/include" \
@@ -278,8 +292,8 @@ fi
 # Build cares (No dependencies)
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libcares.a ]; then
-  wget -nc "$CARES_URL"
-  tar -xf c-ares-${CARES_VER}.tar.gz
+  fetch_src "$CARES_URL"
+  tar -xf "$DOWNLOAD_DIR/c-ares-${CARES_VER}.tar.gz"
   cd c-ares-${CARES_VER} || exit
   CPPFLAGS="-DCARES_STATICLIB=1" \
   ./configure \
@@ -300,8 +314,8 @@ fi
 # Build iconv (No dependencies)
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libiconv.a ]; then
-  wget -nc "$ICONV_URL"
-  tar -xf libiconv-${ICONV_VER}.tar.gz
+  fetch_src "$ICONV_URL"
+  tar -xf "$DOWNLOAD_DIR/libiconv-${ICONV_VER}.tar.gz"
   cd libiconv-${ICONV_VER} || exit
   ./configure \
   --host=$WGET_MINGW_HOST \
@@ -319,8 +333,8 @@ fi
 # Build psl (Requires idn2, unistring, iconv)
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libpsl.a ]; then
-  wget -nc "$PSL_URL"
-  tar -xf libpsl-${PSL_VER}.tar.gz
+  fetch_src "$PSL_URL"
+  tar -xf "$DOWNLOAD_DIR/libpsl-${PSL_VER}.tar.gz"
   cd libpsl-${PSL_VER} || exit
   CFLAGS="-I$INSTALL_PATH/include" \
   LIBS="-L$INSTALL_PATH/lib -lunistring -lidn2" \
@@ -347,7 +361,7 @@ fi
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libpcre2-8.a ]; then
   wget -nc  "$PCRE2_URL"
-  tar -xf pcre2-${PCRE2_VER}.tar.gz
+  tar -xf "$DOWNLOAD_DIR/pcre2-${PCRE2_VER}.tar.gz"
   cd pcre2-${PCRE2_VER} || exit
   ./configure \
   --host=$WGET_MINGW_HOST \
@@ -365,8 +379,8 @@ fi
 # Build gpg-error (No dependencies)
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libgpg-error.a ]; then
-  wget -nc "$GPG_ERROR_URL"
-  tar -xf libgpg-error-${GPG_ERROR_VER}.tar.bz2
+  fetch_src "$GPG_ERROR_URL"
+  tar -xf "$DOWNLOAD_DIR/libgpg-error-${GPG_ERROR_VER}.tar.bz2"
   cd libgpg-error-${GPG_ERROR_VER} || exit
   ./configure \
   --host=$WGET_MINGW_HOST \
@@ -385,8 +399,8 @@ fi
 # Build zlib (No dependencies)
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libz.a ]; then
-  wget -nc "$ZLIB_URL"
-  tar -xf zlib-${ZLIB_VER}.tar.gz
+  fetch_src "$ZLIB_URL"
+  tar -xf "$DOWNLOAD_DIR/zlib-${ZLIB_VER}.tar.gz"
   cd zlib-${ZLIB_VER} || exit
   env $ZLIB_CONFIG_ENV ./configure $ZLIB_CONFIG_ARGS --static --prefix="$INSTALL_PATH"
   (($? != 0)) && { printf '%s\n' "[zlib] configure failed"; exit 1; }
@@ -400,8 +414,8 @@ fi
 # Build gettext (provides libintl for NLS, requires iconv)
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libintl.a ]; then
-  wget -nc "$GETTEXT_URL"
-  tar -xf gettext-${GETTEXT_VER}.tar.gz
+  fetch_src "$GETTEXT_URL"
+  tar -xf "$DOWNLOAD_DIR/gettext-${GETTEXT_VER}.tar.gz"
   cd gettext-${GETTEXT_VER}/gettext-runtime || exit
   ./configure \
   --host=$WGET_MINGW_HOST \
@@ -427,8 +441,8 @@ fi
 # Build openssl (Requires zlib)
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH/$OPENSSL_LIB_DIR/libssl.a" ]; then
-  wget -nc "$OPENSSL_URL"
-  tar -xf openssl-${OPENSSL_VER}.tar.gz
+  fetch_src "$OPENSSL_URL"
+  tar -xf "$DOWNLOAD_DIR/openssl-${OPENSSL_VER}.tar.gz"
   cd openssl-${OPENSSL_VER} || exit
   ./Configure \
   $OPENSSL_FLAGS \
@@ -449,8 +463,8 @@ fi
 # -----------------------------------------------------------------------------
 # Build wget (gnuTLS)
 # -----------------------------------------------------------------------------
-wget -nc "$WGET_URL"
-tar -xf wget-${WGET_VER}.tar.gz
+fetch_src "$WGET_URL"
+tar -xf "$DOWNLOAD_DIR/wget-${WGET_VER}.tar.gz"
 cd wget-${WGET_VER} || exit
 make clean
 # Force fcntl to 'no' because MinGW headers lack POSIX constants like F_SETFD,
