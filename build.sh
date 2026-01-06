@@ -9,15 +9,6 @@
 #   ./build.sh x86   (Builds x86 only)
 #   ./build.sh x64   (Builds x64 only)
 
-# -----------------------------------------------------------------------------
-# Pre-flight check (WSL/Linux compatibility)
-# -----------------------------------------------------------------------------
-while [[ "$(cat /proc/sys/fs/binfmt_misc/status)" == "enabled" ]]
-do
-  echo "The build script requires a password to work."
-  sudo bash -c "echo 0 > /proc/sys/fs/binfmt_misc/status"
-done
-
 BUILD_ARCH_TYPE=$1
 ROOT_DIR=$PWD
 
@@ -108,9 +99,11 @@ if [ ! -f "$INSTALL_PATH"/lib/libgmp.a ]; then
   tar -xf gmp-6.3.0.tar.xz
   cd gmp-6.3.0 || exit
   ./configure \
+   --build=$(./config.guess) \
    --host=$WGET_MINGW_HOST \
    --disable-shared \
-   --prefix="$INSTALL_PATH"
+   --prefix="$INSTALL_PATH" \
+   CC_FOR_BUILD=gcc
   (($? != 0)) && { printf '%s\n' "[gmp] configure failed"; exit 1; }
   make -j $CORE
   (($? != 0)) && { printf '%s\n' "[gmp] make failed"; exit 1; }
