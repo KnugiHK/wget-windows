@@ -137,7 +137,7 @@ abort() {
 # -----------------------------------------------------------------------------
 # Directory & Download Setup
 # -----------------------------------------------------------------------------
-DOWNLOAD_DIR="$ROOT_DIR/build-wget-downloads"
+DOWNLOAD_DIR="$ROOT_DIR/build-wget-dl"
 mkdir -p "$DOWNLOAD_DIR"
 mkdir -p "$WORK_DIR"
 cd "$WORK_DIR"
