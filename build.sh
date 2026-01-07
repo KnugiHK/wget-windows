@@ -99,9 +99,6 @@ if [ "$BUILD_ARCH_TYPE" == "x86" ]; then
   
   # x86 needs winnt version definition
   WGET_EXTRA_CFLAGS="-D_WIN32_WINNT=0x601"
-  # x86 needs explicit bcrypt/ws2_32 linking
-  WGET_EXTRA_LIBS_GNUTLS="-lbcrypt"
-  WGET_EXTRA_LIBS_OPENSSL="-lbcrypt -lws2_32"
   
   EXE_SUFFIX="-x86.exe"
 
@@ -122,8 +119,6 @@ elif [ "$BUILD_ARCH_TYPE" == "x64" ]; then
   OPENSSL_CROSS="x86_64-w64-mingw32-"
   
   WGET_EXTRA_CFLAGS=""
-  WGET_EXTRA_LIBS_GNUTLS=""
-  WGET_EXTRA_LIBS_OPENSSL=""
   
   EXE_SUFFIX="-x64.exe"
 else
@@ -468,7 +463,7 @@ CFLAGS="-I$INSTALL_PATH/include $WGET_EXTRA_CFLAGS -DGNUTLS_INTERNAL_BUILD=1 -DC
  CARES_LIBS="-L$INSTALL_PATH/lib -lcares" \
  PCRE2_CFLAGS=$CFLAGS \
  PCRE2_LIBS="-L$INSTALL_PATH/lib -lpcre2-8"  \
- LIBS="-L$INSTALL_PATH/lib $WGET_EXTRA_LIBS_GNUTLS -lhogweed -lnettle -lgmp -ltasn1 -lidn2 -lpsl -liphlpapi -lcares -lunistring -liconv -lpcre2-8 -lgpg-error -lz -lcrypt32 -lpthread -lintl" \
+ LIBS="-L$INSTALL_PATH/lib -lpsl -lhogweed -lnettle -lgnutls -lgmp -ltasn1 -lidn2 -lcares -lunistring -lpcre2-8 -lgpg-error -liconv -lintl -lz -lws2_32 -lbcrypt -lcrypt32 -liphlpapi -lpthread" \
  ./configure \
  --host=$WGET_MINGW_HOST \
  --prefix="$INSTALL_PATH" \
@@ -509,7 +504,7 @@ CFLAGS="-I$INSTALL_PATH/include $WGET_EXTRA_CFLAGS -DCARES_STATICLIB=1 -DPCRE2_S
  CARES_LIBS="-L$INSTALL_PATH/lib -lcares" \
  PCRE2_CFLAGS=$CFLAGS \
  PCRE2_LIBS="-L$INSTALL_PATH/lib -lpcre2-8"  \
- LIBS="-L$INSTALL_PATH/lib -L$INSTALL_PATH/$OPENSSL_LIB_DIR $WGET_EXTRA_LIBS_OPENSSL -lidn2 -lpsl -liphlpapi -lcares -lunistring -liconv -lpcre2-8 -lgpg-error -lcrypto -lssl -lz -lcrypt32 -lintl" \
+ LIBS="-L$INSTALL_PATH/lib -L$INSTALL_PATH/$OPENSSL_LIB_DIR -lssl -lcrypto -lpsl -lidn2 -lunistring -liconv -lpcre2-8 -lgpg-error -lintl -lcares -lz -lws2_32 -lbcrypt -lcrypt32 -liphlpapi" \
  ./configure \
  --host=$WGET_MINGW_HOST \
  --prefix="$INSTALL_PATH" \
