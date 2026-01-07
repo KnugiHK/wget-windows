@@ -104,7 +104,7 @@ jobs:
         with:
           path: ./test-bins
 
-      - name: Run Python Tests
+      - name: Run Tests in Python
         shell: pwsh
         run: |
           Get-ChildItem -Path ./test-bins -Filter *.exe -Recurse | Move-Item -Destination .
