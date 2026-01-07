@@ -7,6 +7,9 @@ on:
   push:
     branches:
       - '**'
+    paths-ignore:
+      - 'README.md'
+      - 'RELEASE.md'
   workflow_dispatch:
 
 permissions:
