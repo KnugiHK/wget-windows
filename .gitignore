@@ -54,3 +54,4 @@ dkms.conf
 # Artifacts
 build-wget
 build-wget-x86
+build-wget-dl
