@@ -485,7 +485,7 @@ CFLAGS="-I$INSTALL_PATH/include $WGET_EXTRA_CFLAGS -DGNUTLS_INTERNAL_BUILD=1 -DC
 || abort "[wget gnutls] configure failed"
 make -j $CORE || abort "[wget gnutls] make failed"
 make install || abort "[wget gnutls] make install"
-mkdir "$INSTALL_PATH"/wget-gnutls
+mkdir -p "$INSTALL_PATH"/wget-gnutls
 cp "$INSTALL_PATH"/bin/wget.exe "$INSTALL_PATH"/wget-gnutls/wget-gnutls$EXE_SUFFIX
 $MINGW_STRIP_TOOL "$INSTALL_PATH"/wget-gnutls/wget-gnutls$EXE_SUFFIX
 # -----------------------------------------------------------------------------
@@ -527,7 +527,7 @@ CFLAGS="-I$INSTALL_PATH/include $WGET_EXTRA_CFLAGS -DCARES_STATICLIB=1 -DPCRE2_S
 || abort "[wget openssl] configure failed"
 make -j $CORE || abort "[wget openssl] make failed"
 make install || abort "[wget openssl] make install"
-mkdir "$INSTALL_PATH"/wget-openssl
+mkdir -p "$INSTALL_PATH"/wget-openssl
 cp "$INSTALL_PATH"/bin/wget.exe "$INSTALL_PATH"/wget-openssl/wget-openssl$EXE_SUFFIX
 $MINGW_STRIP_TOOL "$INSTALL_PATH"/wget-openssl/wget-openssl$EXE_SUFFIX
 cd "$ROOT_DIR" && exit 0
