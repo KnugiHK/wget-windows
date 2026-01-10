@@ -141,8 +141,7 @@ jobs:
       - name: Run Tests in Python
         shell: pwsh
         run: |
-          Get-ChildItem -Path ./test-bins -Filter -Exclude *arm64.exe -Recurse | Move-Item -Destination .
-          $executables = Get-ChildItem -Name *.exe
+          $executables = Get-ChildItem ./test-bins -Exclude *arm64.exe -Recurse | Select-Object -ExpandProperty FullName
           python wget_tests.py $executables
 
   test-windows-arm64:
@@ -168,8 +167,7 @@ jobs:
       - name: Run Tests in Python
         shell: pwsh
         run: |
-          Get-ChildItem -Path ./test-bins -Filter *arm64.exe -Recurse | Move-Item -Destination .
-          $executables = Get-ChildItem -Name *.exe
+          $executables = Get-ChildItem ./test-bins -Filter *arm64.exe -Recurse | Select-Object -ExpandProperty FullName
           python wget_tests.py $executables
 
   # --- Release Job ---
