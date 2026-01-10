@@ -1,10 +1,9 @@
 name: Build wget for Windows
 
 on:
-  create:
+  push:
     tags:
       - v*
-  push:
     branches:
       - '**'
     paths-ignore:
