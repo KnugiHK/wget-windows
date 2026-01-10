@@ -225,6 +225,16 @@ abort() {
     exit 1
 }
 
+wget-arm64-hacks() {
+  # This is a fallback implementation. I have attempted several
+  # override patterns without success; keeping this dirty fix
+  # for now to maintain functionality.
+  if [ "$BUILD_ARCH_TYPE" == "arm64" ]; then 
+    echo "Patching config.h to fix ARM64 daylight/timezone conflict..."
+    sed -i '/#define __daylight daylight/d' src/config.h
+  fi
+}
+
 # -----------------------------------------------------------------------------
 # Directory & Download Setup
 # -----------------------------------------------------------------------------
@@ -570,6 +580,7 @@ CFLAGS="-I$INSTALL_PATH/include -DGNUTLS_INTERNAL_BUILD=1 -DCARES_STATICLIB=1 -D
   ac_cv_func_fcntl=no \
  $WGET_OVERRIDE \
 || abort "[wget gnutls] configure failed"
+wget-arm64-hacks
 make -j $CORE || abort "[wget gnutls] make failed"
 make install || abort "[wget gnutls] make install"
 mkdir -p "$INSTALL_PATH"/wget-gnutls
@@ -615,6 +626,7 @@ CFLAGS="-I$INSTALL_PATH/include -DCARES_STATICLIB=1 -DPCRE2_STATIC=1 -DNDEBUG -O
   ac_cv_func_fcntl=no \
   $WGET_OVERRIDE \
 || abort "[wget openssl] configure failed"
+wget-arm64-hacks
 make -j $CORE || abort "[wget openssl] make failed"
 make install || abort "[wget openssl] make install"
 mkdir -p "$INSTALL_PATH"/wget-openssl
