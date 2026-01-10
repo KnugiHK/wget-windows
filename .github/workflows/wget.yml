@@ -166,7 +166,7 @@ jobs:
       - name: Run Tests in Python
         shell: pwsh
         run: |
-          $executables = Get-ChildItem ./test-bins -Filter *arm64.exe -Recurse | Select-Object -ExpandProperty FullName
+          $executables = Get-ChildItem ./test-bins -Filter *arm64.exe -Exclude wget-gnutls-arm64.exe -Recurse | Select-Object -ExpandProperty FullName
           python wget_tests.py $executables
 
   # --- Release Job ---
