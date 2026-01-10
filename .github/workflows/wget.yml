@@ -39,6 +39,7 @@ jobs:
           VERSION=$(grep -Po '(?<=wget-)\d+\.\d{2}\.\d+' build.sh | uniq)
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
           echo "Extracted: $VERSION"
+          cd build-wget-x64/install && zip -r ../../datafiles.zip etc share/locale
 
       - name: Attest x64 Binaries
         uses: actions/attest-build-provenance@v3
@@ -46,6 +47,7 @@ jobs:
           subject-path: |
             build-wget-x64/install/wget-gnutls/wget-gnutls-x64.exe
             build-wget-x64/install/wget-openssl/wget-openssl-x64.exe
+            datafiles.zip
 
       - name: Archive artifacts
         uses: actions/upload-artifact@v6
@@ -54,6 +56,12 @@ jobs:
           path: |
             build-wget-x64/install/wget-gnutls/wget-gnutls-x64.exe
             build-wget-x64/install/wget-openssl/wget-openssl-x64.exe
+
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v6
+        with:
+          name: datafiles-zip
+          path: datafiles.zip
 
   # --- x86 Build Job ---
   build-x86:
