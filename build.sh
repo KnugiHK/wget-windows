@@ -69,8 +69,8 @@ if [ "$BUILD_ARCH_TYPE" == "both" ]; then
   echo "================================================================="
   echo "ENACTING DUAL-ARCHITECHTURE BUILD"
   echo "================================================================="
-  "$0" x64 || exit 1
-  "$0" x86 || exit 1
+  /bin/bash "$0" x64 || exit 1
+  /bin/bash "$0" x86 || exit 1
   exit 0
 fi
 
