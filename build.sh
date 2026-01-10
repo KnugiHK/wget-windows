@@ -65,6 +65,7 @@ LLVM_MINGW_URL="https://github.com/mstorsjo/llvm-mingw/releases/download/2025121
 # -----------------------------------------------------------------------------
 
 BUILD_ARCH_TYPE=$1
+ADDITIONAL_ARG=$2
 ROOT_DIR=$PWD
 
 if [ -z "$BUILD_ARCH_TYPE" ]; then
@@ -116,8 +117,6 @@ if [ "$BUILD_ARCH_TYPE" == "x86" ]; then
   OPENSSL_LIB_DIR="lib"
   OPENSSL_CROSS="i686-w64-mingw32-"
   
-  WGET_CFLAGS="-Derror=rpl_error"
-  
   EXE_SUFFIX="-x86.exe"
 
 elif [ "$BUILD_ARCH_TYPE" == "x64" ]; then
@@ -138,8 +137,7 @@ elif [ "$BUILD_ARCH_TYPE" == "x64" ]; then
   OPENSSL_FLAGS="enable-asm"
   OPENSSL_LIB_DIR="lib64"
   OPENSSL_CROSS="x86_64-w64-mingw32-"
-  WGET_CFLAGS="-Derror=rpl_error"
-  
+
   EXE_SUFFIX="-x64.exe"
 elif [ "$BUILD_ARCH_TYPE" == "arm64" ]; then
   WORK_DIR="build-wget-arm64"
@@ -190,6 +188,19 @@ else
   exit 1
 fi
 
+if [[ "$BUILD_ARCH_TYPE" == "x86" ]] || [[ "$BUILD_ARCH_TYPE" == "x64" ]]; then
+  # If building for MinGW-w64 13 or later, apply specific flags
+  # These are mostly hacks and should be removed once upstream fixes the issues
+  if [ "$ADDITIONAL_ARG" == "mingw13" ]; then
+    WGET_CFLAGS="-D_GNU_SOURCE -Wno-implicit-function-declaration -Wno-error=int-conversion -Wno-incompatible-pointer-types"
+    WGET_OVERRIDE="ac_cv_func_error=no"
+    GMP_CFLAGS="-std=gnu11"
+  else
+    # This is also needed for older MinGW versions
+    WGET_CFLAGS="-Derror=rpl_error"
+  fi
+fi
+
 # Workaround for gnulib's nanosleep check failing under cross-compilation
 # Fixed in https://savannah.gnu.org/bugs/?67704
 # To be removed when libraries updates gnulib
@@ -238,6 +249,7 @@ if [ ! -f "$INSTALL_PATH"/lib/libgmp.a ]; then
   fetch_src "$GMP_URL"
   tar -xf "$DOWNLOAD_DIR/gmp-${GMP_VER}.tar.xz"
   cd gmp-${GMP_VER}
+  CFLAGS="$GMP_CFLAGS" \
   ./configure \
    --build=$(./config.guess) \
    --host=$WGET_MINGW_HOST \
