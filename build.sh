@@ -28,6 +28,9 @@ IDN2_URL="https://ftp.gnu.org/gnu/libidn/libidn2-${IDN2_VER}.tar.gz"
 UNISTRING_VER="1.4.1"
 UNISTRING_URL="https://ftp.gnu.org/gnu/libunistring/libunistring-${UNISTRING_VER}.tar.gz"
 
+ZLIB_VER="1.3.1"
+ZLIB_URL="https://github.com/madler/zlib/releases/download/v${ZLIB_VER}/zlib-${ZLIB_VER}.tar.gz"
+
 GNUTLS_VER="3.8.11"
 GNUTLS_URL="https://www.gnupg.org/ftp/gcrypt/gnutls/v3.8/gnutls-${GNUTLS_VER}.tar.xz"
 
@@ -46,9 +49,6 @@ PCRE2_URL="https://github.com/PCRE2Project/pcre2/releases/download/pcre2-${PCRE2
 GPG_ERROR_VER="1.58"
 GPG_ERROR_URL="https://www.gnupg.org/ftp/gcrypt/libgpg-error/libgpg-error-${GPG_ERROR_VER}.tar.bz2"
 
-ZLIB_VER="1.3.1"
-ZLIB_URL="https://github.com/madler/zlib/releases/download/v${ZLIB_VER}/zlib-${ZLIB_VER}.tar.gz"
-
 GETTEXT_VER="0.26"
 GETTEXT_URL="https://ftp.gnu.org/gnu/gettext/gettext-${GETTEXT_VER}.tar.gz"
 
@@ -57,6 +57,12 @@ OPENSSL_URL="https://github.com/openssl/openssl/releases/download/openssl-${OPEN
 
 WGET_VER="1.24.5"
 WGET_URL="https://ftp.gnu.org/gnu/wget/wget-${WGET_VER}.tar.gz"
+
+LLVM_MINGW_URL="https://github.com/mstorsjo/llvm-mingw/releases/download/20251216/llvm-mingw-20251216-ucrt-ubuntu-22.04-x86_64.tar.xz"
+
+# -----------------------------------------------------------------------------
+# Entry Point
+# -----------------------------------------------------------------------------
 
 BUILD_ARCH_TYPE=$1
 ROOT_DIR=$PWD
@@ -81,41 +87,95 @@ echo "================================================================="
 # -----------------------------------------------------------------------------
 # Set Architecture Specific Variables
 # -----------------------------------------------------------------------------
+download_arm64_toolchain() {
+  if [[ ! -d "$LLVM_MINGW_PATH" || ! -f "$LLVM_MINGW_PATH/bin/aarch64-w64-mingw32-gcc" ]]; then
+    echo "llvm-mingw not found. Downloading..."
+    mkdir -p "$LLVM_MINGW_PATH"
+    wget -qO- "$LLVM_MINGW_URL" | tar -xJ --strip-components=1 -C "$LLVM_MINGW_PATH"
+  else
+    echo "ARM64 MinGW toolchain already exists. Skipping download."
+  fi
+}
+
 if [ "$BUILD_ARCH_TYPE" == "x86" ]; then
   WORK_DIR="build-wget-x86"
+  mkdir -p "$WORK_DIR/install"
+  export INSTALL_PATH=$ROOT_DIR/$WORK_DIR/install
   export WGET_GCC=i686-w64-mingw32-gcc
   export WGET_MINGW_HOST=i686-w64-mingw32
   export WGET_ARCH=i686
   export MINGW_STRIP_TOOL=i686-w64-mingw32-strip
+  export PKG_CONFIG_PATH="$INSTALL_PATH/lib/pkgconfig:$PKG_CONFIG_PATH"
   
   # Specific compilation flags for x86
   ZLIB_CONFIG_ENV="CC=$WGET_GCC CFLAGS=-m32 -march=i686"
   ZLIB_CONFIG_ARGS=""
   
   OPENSSL_ARCH="mingw"
-  OPENSSL_FLAGS="-m32"
+  OPENSSL_FLAGS="-m32 enable-asm"
   OPENSSL_LIB_DIR="lib"
   OPENSSL_CROSS="i686-w64-mingw32-"
+  
+  WGET_CFLAGS="-Derror=rpl_error"
   
   EXE_SUFFIX="-x86.exe"
 
 elif [ "$BUILD_ARCH_TYPE" == "x64" ]; then
   WORK_DIR="build-wget"
+  mkdir -p "$WORK_DIR/install"
+  export INSTALL_PATH=$ROOT_DIR/$WORK_DIR/install
   export WGET_GCC=x86_64-w64-mingw32-gcc
   export WGET_MINGW_HOST=x86_64-w64-mingw32
   export WGET_ARCH=x86-64
   export MINGW_STRIP_TOOL=x86_64-w64-mingw32-strip
+  export PKG_CONFIG_PATH="$INSTALL_PATH/lib64/pkgconfig:$PKG_CONFIG_PATH"
   
   # Specific compilation flags for x64
   ZLIB_CONFIG_ENV="CC=$WGET_GCC"
   ZLIB_CONFIG_ARGS="--64"
   
   OPENSSL_ARCH="mingw64"
-  OPENSSL_FLAGS=""
+  OPENSSL_FLAGS="enable-asm"
   OPENSSL_LIB_DIR="lib64"
   OPENSSL_CROSS="x86_64-w64-mingw32-"
+  WGET_CFLAGS="-Derror=rpl_error"
   
   EXE_SUFFIX="-x64.exe"
+elif [ "$BUILD_ARCH_TYPE" == "arm64" ]; then
+  WORK_DIR="build-wget-arm64"
+  mkdir -p "$WORK_DIR/install"
+  export INSTALL_PATH=$ROOT_DIR/$WORK_DIR/install
+  export WGET_MINGW_HOST=aarch64-w64-mingw32
+  export WGET_ARCH=armv8-a
+  export LLVM_MINGW_PATH="$ROOT_DIR/llvm_mingw"
+  export PATH="$LLVM_MINGW_PATH/bin:$PATH"
+  export CC=aarch64-w64-mingw32-gcc
+  export CXX=aarch64-w64-mingw32-g++
+  export RC=aarch64-w64-mingw32-windres
+  export AR=aarch64-w64-mingw32-ar
+  export RANLIB=aarch64-w64-mingw32-ranlib
+  export NM=aarch64-w64-mingw32-nm
+  export LD=aarch64-w64-mingw32-ld
+  export MINGW_STRIP_TOOL=aarch64-w64-mingw32-strip
+  export PKG_CONFIG_PATH="$INSTALL_PATH/lib64/pkgconfig:$PKG_CONFIG_PATH"
+  download_arm64_toolchain
+
+  ZLIB_CONFIG_ENV="CC=$CC"
+  ZLIB_CONFIG_ARGS=""
+  
+  OPENSSL_ARCH="mingw64"
+  OPENSSL_FLAGS="no-asm"
+  OPENSSL_LIB_DIR="lib64"
+  OPENSSL_CROSS=""
+  
+  WGET_CFLAGS="-D_GNU_SOURCE -Wno-implicit-function-declaration"
+  WGET_OVERRIDE="ac_cv_func_error=no ac_cv_func_strchrnul=no"
+
+  # Disable ASM and hardware acceleration because GnuTLS does not 
+  # provide AArch64 assembly in the MinGW COFF format (unlike x86_64).
+  GNUTLS_FLAGS="--disable-asm --disable-hardware-acceleration"
+  
+  EXE_SUFFIX="-arm64.exe"
 elif [ "$BUILD_ARCH_TYPE" == "disable_binfmt" ]; then
   if [ "$(id -u)" -ne 0 ]; then
     echo "Please run as root to disable binfmt_misc."
@@ -128,6 +188,14 @@ else
   echo "Unknown architechture"
   exit 1
 fi
+
+# Workaround for gnulib's nanosleep check failing under cross-compilation
+# Fixed in https://savannah.gnu.org/bugs/?67704
+# To be removed when libraries updates gnulib
+NANOSLEEP_OVERRIDES=(
+  ac_cv_search_nanosleep="none required" 
+  gl_cv_func_nanosleep=yes
+)
 
 export CORE=$(nproc)
 
@@ -147,10 +215,6 @@ abort() {
 # -----------------------------------------------------------------------------
 DOWNLOAD_DIR="$ROOT_DIR/build-wget-dl"
 mkdir -p "$DOWNLOAD_DIR"
-mkdir -p "$WORK_DIR"
-cd "$WORK_DIR"
-mkdir -p install
-export INSTALL_PATH=$PWD/install
 
 # Helper to fetch from cache or download
 fetch_src() {
@@ -159,10 +223,13 @@ fetch_src() {
     if [ ! -f "$DOWNLOAD_DIR/$filename" ]; then
         echo "downloading $filename..."
         wget -nc -P "$DOWNLOAD_DIR" "$url"
-	else
+    else
         echo "cache hit: $filename"
     fi
 }
+
+cd $WORK_DIR
+
 # -----------------------------------------------------------------------------
 # Build gmp (No dependencies)
 # -----------------------------------------------------------------------------
@@ -241,6 +308,7 @@ if [ ! -f "$INSTALL_PATH"/lib/libunistring.a ]; then
   fetch_src "$UNISTRING_URL"
   tar -xf "$DOWNLOAD_DIR/libunistring-${UNISTRING_VER}.tar.gz"
   cd libunistring-${UNISTRING_VER}
+  env "${NANOSLEEP_OVERRIDES[@]}" \
   ./configure \
   --host=$WGET_MINGW_HOST \
   --disable-shared \
@@ -251,12 +319,29 @@ if [ ! -f "$INSTALL_PATH"/lib/libunistring.a ]; then
   cd ..
 fi
 # -----------------------------------------------------------------------------
-# Build gnutls (Requires GMP, nettle, tasn1, idn2)
+# Build zlib (No dependencies)
+# -----------------------------------------------------------------------------
+if [ ! -f "$INSTALL_PATH"/lib/libz.a ]; then
+  fetch_src "$ZLIB_URL"
+  tar -xf "$DOWNLOAD_DIR/zlib-${ZLIB_VER}.tar.gz"
+  cd zlib-${ZLIB_VER}
+  env $ZLIB_CONFIG_ENV  \
+  ./configure $ZLIB_CONFIG_ARGS  \
+  --static \
+  --prefix="$INSTALL_PATH" \
+  || abort "[zlib] configure failed"
+  make -j $CORE || abort "[zlib] make failed"
+  make install || abort "[zlib] make install"
+  cd ..
+fi
+# -----------------------------------------------------------------------------
+# Build gnutls (Requires GMP, nettle, tasn1, idn2, zlib (arm64))
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libgnutls.a ]; then
   fetch_src "$GNUTLS_URL"
   tar -xf "$DOWNLOAD_DIR/gnutls-${GNUTLS_VER}.tar.xz"
   cd gnutls-${GNUTLS_VER}
+  env "${NANOSLEEP_OVERRIDES[@]}" \
   PKG_CONFIG_PATH="$INSTALL_PATH/lib/pkgconfig" \
   CFLAGS="-I$INSTALL_PATH/include" \
   LDFLAGS="-L$INSTALL_PATH/lib" \
@@ -273,6 +358,7 @@ if [ ! -f "$INSTALL_PATH"/lib/libgnutls.a ]; then
   ./configure \
   --host=$WGET_MINGW_HOST \
   --prefix="$INSTALL_PATH" \
+  $GNUTLS_FLAGS \
   --with-included-unistring \
   --disable-openssl-compatibility \
   --without-p11-kit \
@@ -383,22 +469,6 @@ if [ ! -f "$INSTALL_PATH"/lib/libgpg-error.a ]; then
   cd ..
 fi
 # -----------------------------------------------------------------------------
-# Build zlib (No dependencies)
-# -----------------------------------------------------------------------------
-if [ ! -f "$INSTALL_PATH"/lib/libz.a ]; then
-  fetch_src "$ZLIB_URL"
-  tar -xf "$DOWNLOAD_DIR/zlib-${ZLIB_VER}.tar.gz"
-  cd zlib-${ZLIB_VER}
-  env $ZLIB_CONFIG_ENV  \
-  ./configure $ZLIB_CONFIG_ARGS  \
-  --static \
-  --prefix="$INSTALL_PATH" \
-  || abort "[zlib] configure failed"
-  make -j $CORE || abort "[zlib] make failed"
-  make install || abort "[zlib] make install"
-  cd ..
-fi
-# -----------------------------------------------------------------------------
 # Build gettext (provides libintl for NLS, requires iconv)
 # -----------------------------------------------------------------------------
 if [ ! -f "$INSTALL_PATH"/lib/libintl.a ]; then
@@ -430,6 +500,8 @@ if [ ! -f "$INSTALL_PATH/$OPENSSL_LIB_DIR/libssl.a" ]; then
   fetch_src "$OPENSSL_URL"
   tar -xf "$DOWNLOAD_DIR/openssl-${OPENSSL_VER}.tar.gz"
   cd openssl-${OPENSSL_VER}
+  CPPFLAGS="-I$INSTALL_PATH/include" \
+  LDFLAGS="-L$INSTALL_PATH/lib" \
   ./Configure \
   $OPENSSL_FLAGS \
   --static \
@@ -438,10 +510,8 @@ if [ ! -f "$INSTALL_PATH/$OPENSSL_LIB_DIR/libssl.a" ]; then
   --cross-compile-prefix=$OPENSSL_CROSS \
   $OPENSSL_ARCH \
   no-shared \
-  enable-asm \
   no-tests \
-  --with-zlib-include="$INSTALL_PATH" \
-  --with-zlib-lib="$INSTALL_PATH"/lib/libz.a \
+  zlib \
   || abort "[openssl] configure failed"
  make -j $CORE || abort "[openssl] make failed"
  make install_sw || abort "[openssl] make install_sw"
@@ -456,7 +526,7 @@ tar -xf "$DOWNLOAD_DIR/wget-${WGET_VER}.tar.gz"
 cd "wget-${WGET_VER}"
 # Force fcntl to 'no' because MinGW headers lack POSIX constants like F_SETFD,
 # causing Gnulib's replacement wrapper (rpl_fcntl) to fail during compilation.
-CFLAGS="-I$INSTALL_PATH/include -DGNUTLS_INTERNAL_BUILD=1 -DCARES_STATICLIB=1 -DPCRE2_STATIC=1 -DNDEBUG -O2 -march=$WGET_ARCH -mtune=generic -Derror=rpl_error" \
+CFLAGS="-I$INSTALL_PATH/include -DGNUTLS_INTERNAL_BUILD=1 -DCARES_STATICLIB=1 -DPCRE2_STATIC=1 -DNDEBUG -O2 -march=$WGET_ARCH -mtune=generic $WGET_CFLAGS" \
  LDFLAGS="-L$INSTALL_PATH/lib -static -static-libgcc" \
  GNUTLS_CFLAGS=$CFLAGS \
  GNUTLS_LIBS="-L$INSTALL_PATH/lib -lgnutls -lbcrypt -lncrypt" \
@@ -480,6 +550,7 @@ CFLAGS="-I$INSTALL_PATH/include -DGNUTLS_INTERNAL_BUILD=1 -DCARES_STATICLIB=1 -D
  --with-cares \
  --with-libpsl \
   ac_cv_func_fcntl=no \
+ $WGET_OVERRIDE \
 || abort "[wget gnutls] configure failed"
 make -j $CORE || abort "[wget gnutls] make failed"
 make install || abort "[wget gnutls] make install"
@@ -497,7 +568,8 @@ cp ../../windows-openssl.diff .
 patch src/openssl.c < windows-openssl.diff
 # Force fcntl to 'no' because MinGW headers lack POSIX constants like F_SETFD,
 # causing Gnulib's replacement wrapper (rpl_fcntl) to fail during compilation.
-CFLAGS="-I$INSTALL_PATH/include -DCARES_STATICLIB=1 -DPCRE2_STATIC=1 -DNDEBUG -O2 -march=$WGET_ARCH -mtune=generic -Derror=rpl_error" \
+env "${NANOSLEEP_OVERRIDES[@]}" \
+CFLAGS="-I$INSTALL_PATH/include -DCARES_STATICLIB=1 -DPCRE2_STATIC=1 -DNDEBUG -O2 -march=$WGET_ARCH -mtune=generic $WGET_CFLAGS" \
  LDFLAGS="-L$INSTALL_PATH/lib -static -static-libgcc" \
  OPENSSL_CFLAGS=$CFLAGS \
  OPENSSL_LIBS="-L$INSTALL_PATH/$OPENSSL_LIB_DIR -lcrypto -lssl -lbcrypt" \
@@ -522,6 +594,7 @@ CFLAGS="-I$INSTALL_PATH/include -DCARES_STATICLIB=1 -DPCRE2_STATIC=1 -DNDEBUG -O
  --with-libpsl \
  --with-openssl \
   ac_cv_func_fcntl=no \
+  $WGET_OVERRIDE \
 || abort "[wget openssl] configure failed"
 make -j $CORE || abort "[wget openssl] make failed"
 make install || abort "[wget openssl] make install"
