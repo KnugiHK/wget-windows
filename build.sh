@@ -19,7 +19,7 @@ GMP_URL="https://ftp.gnu.org/gnu/gmp/gmp-${GMP_VER}.tar.xz"
 NETTLE_VER="3.10.2"
 NETTLE_URL="https://ftp.gnu.org/gnu/nettle/nettle-${NETTLE_VER}.tar.gz"
 
-TASN1_VER="4.20.0"
+TASN1_VER="4.21.0"
 TASN1_URL="https://ftp.gnu.org/gnu/libtasn1/libtasn1-${TASN1_VER}.tar.gz"
 
 IDN2_VER="2.3.8"
