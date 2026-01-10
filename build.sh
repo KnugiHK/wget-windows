@@ -545,6 +545,7 @@ cd "wget-${WGET_VER}"
 # causing Gnulib's replacement wrapper (rpl_fcntl) to fail during compilation.
 CFLAGS="-I$INSTALL_PATH/include -DGNUTLS_INTERNAL_BUILD=1 -DCARES_STATICLIB=1 -DPCRE2_STATIC=1 -DNDEBUG -O2 -march=$WGET_ARCH -mtune=generic $WGET_CFLAGS" \
  LDFLAGS="-L$INSTALL_PATH/lib -static -static-libgcc" \
+ CPPFLAGS="-DSYSTEM_WGETRC='\"C:/ProgramData/wget/etc/wgetrc\"' -DLOCALEDIR='\"C:/ProgramData/wget/share/locale\"'" \
  GNUTLS_CFLAGS=$CFLAGS \
  GNUTLS_LIBS="-L$INSTALL_PATH/lib -lgnutls -lbcrypt -lncrypt" \
  LIBPSL_CFLAGS=$CFLAGS \
@@ -588,6 +589,7 @@ patch src/openssl.c < windows-openssl.diff
 env "${NANOSLEEP_OVERRIDES[@]}" \
 CFLAGS="-I$INSTALL_PATH/include -DCARES_STATICLIB=1 -DPCRE2_STATIC=1 -DNDEBUG -O2 -march=$WGET_ARCH -mtune=generic $WGET_CFLAGS" \
  LDFLAGS="-L$INSTALL_PATH/lib -static -static-libgcc" \
+ CPPFLAGS="-DSYSTEM_WGETRC='\"C:/ProgramData/wget/etc/wgetrc\"' -DLOCALEDIR='\"C:/ProgramData/wget/share/locale\"'" \
  OPENSSL_CFLAGS=$CFLAGS \
  OPENSSL_LIBS="-L$INSTALL_PATH/$OPENSSL_LIB_DIR -lcrypto -lssl -lbcrypt" \
  LIBPSL_CFLAGS=$CFLAGS \
