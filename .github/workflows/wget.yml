@@ -147,7 +147,7 @@ jobs:
   test-windows-arm64:
     name: Test Binaries on Windows (arm64)
     needs: [build-arm64]
-    runs-on: windows-latest
+    runs-on: windows-11-arm
     env:
       WGET_VERSION: ${{ needs.build-x64.outputs.wget_version }}
       PYTHONUTF8: 1
