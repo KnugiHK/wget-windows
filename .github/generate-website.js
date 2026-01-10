@@ -233,9 +233,10 @@ async function generateSite() {
             }
 
             .option-buttons {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 12px;
+                display: flex;
+                flex-direction: row;
+                gap: 10px;
+                justify-content: space-between;
             }
 
             .option-btn {
@@ -247,6 +248,10 @@ async function generateSite() {
                 transition: all 0.2s;
                 font-weight: 500;
                 text-align: center;
+                display: grid;
+                flex: 1;
+                flex-direction: column;
+                min-width: 0;
             }
 
             .option-btn:hover {
@@ -437,6 +442,8 @@ async function generateSite() {
 
                 .option-buttons {
                     grid-template-columns: 1fr;
+                    flex-direction: column;
+                    width: 100%;
                 }
                 .modal-footer {
                     flex-direction: column;
@@ -542,6 +549,7 @@ async function generateSite() {
                         <div class="option-buttons">
                             <button class="option-btn selected" data-option="arch" data-value="x64">x64 (64-bit)</button>
                             <button class="option-btn" data-option="arch" data-value="x86">x86 (32-bit)</button>
+                            <button class="option-btn" data-option="arch" data-value="arm64">ARM64</button>
                         </div>
                     </div>
 
