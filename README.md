@@ -46,6 +46,7 @@ git clone https://github.com/KnugiHK/wget-on-windows && cd wget-on-windows
 ./build.sh # Builds both x86 and x64
 ./build.sh x64 # Builds x64 only
 ./build.sh x86 # Builds x86 only
+./build.sh arm64 # Builds arm64 only
 ```
 
 ## Verifying Build Integrity
