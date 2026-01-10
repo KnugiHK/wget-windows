@@ -168,7 +168,7 @@ elif [ "$BUILD_ARCH_TYPE" == "arm64" ]; then
   OPENSSL_MAKE_OVERRIDE="RCFLAGS=-D__WIN32 -D__AARCH64"
   
   WGET_CFLAGS="-D_GNU_SOURCE -Wno-implicit-function-declaration"
-  WGET_OVERRIDE="ac_cv_func_error=no ac_cv_func_strchrnul=no"
+  WGET_OVERRIDE="ac_cv_func_error=no ac_cv_func_strchrnul=no gl_cv_var___daylight=__daylight"
 
   # Disable ASM and hardware acceleration because GnuTLS does not 
   # provide AArch64 assembly in the MinGW COFF format (unlike x86_64).
@@ -223,16 +223,6 @@ abort() {
     echo "Directory: $(pwd)"
     echo "====================================================="
     exit 1
-}
-
-wget-arm64-hacks() {
-  # This is a fallback implementation. I have attempted several
-  # override patterns without success; keeping this dirty fix
-  # for now to maintain functionality.
-  if [ "$BUILD_ARCH_TYPE" == "arm64" ]; then 
-    echo "Patching config.h to fix ARM64 daylight/timezone conflict..."
-    sed -i '/#define __daylight daylight/d' src/config.h
-  fi
 }
 
 # -----------------------------------------------------------------------------
@@ -580,7 +570,6 @@ CFLAGS="-I$INSTALL_PATH/include -DGNUTLS_INTERNAL_BUILD=1 -DCARES_STATICLIB=1 -D
   ac_cv_func_fcntl=no \
  $WGET_OVERRIDE \
 || abort "[wget gnutls] configure failed"
-wget-arm64-hacks
 make -j $CORE || abort "[wget gnutls] make failed"
 make install || abort "[wget gnutls] make install"
 mkdir -p "$INSTALL_PATH"/wget-gnutls
@@ -626,7 +615,6 @@ CFLAGS="-I$INSTALL_PATH/include -DCARES_STATICLIB=1 -DPCRE2_STATIC=1 -DNDEBUG -O
   ac_cv_func_fcntl=no \
   $WGET_OVERRIDE \
 || abort "[wget openssl] configure failed"
-wget-arm64-hacks
 make -j $CORE || abort "[wget openssl] make failed"
 make install || abort "[wget openssl] make install"
 mkdir -p "$INSTALL_PATH"/wget-openssl
