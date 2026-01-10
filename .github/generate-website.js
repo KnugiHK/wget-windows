@@ -636,6 +636,10 @@ async function generateSite() {
                     const option = btn.dataset.option;
                     const value = btn.dataset.value;
 
+                    if (option === 'arch' && value !== 'arm64') {
+                        resetSSLButtons();
+                    }
+
                     // Remove selected class from siblings
                     document.querySelectorAll(\`[data-option="\${option}"]\`).forEach(b => {
                         b.classList.remove('selected');
@@ -645,12 +649,40 @@ async function generateSite() {
                     btn.classList.add('selected');
                     selections[option] = value;
 
+                    // If ARM64 is selected, force OpenSSL (GnuTLS not supported ATM)
+                    if (option === 'arch' && value === 'arm64') {
+                        forceOpenSSL();
+                    }
+
                     // Enable download button if both selections are made
                     if (selections.arch && selections.ssl) {
                         confirmDownloadBtn.disabled = false;
                     }
                 });
             });
+
+            // Helper function to handle the dependency
+            function forceOpenSSL() {
+                const sslOptions = document.querySelectorAll('[data-option="ssl"]');
+                
+                sslOptions.forEach(btn => {
+                    if (btn.dataset.value === 'openssl') {
+                        btn.classList.add('selected');
+                        selections.ssl = 'openssl';
+                        btn.disabled = false; // Ensure it's clickable
+                    } else {
+                        btn.classList.remove('selected');
+                        btn.disabled = true; // Disable other options for ARM64
+                    }
+                });
+            }
+
+            // Helper to re-enable SSL buttons if user switches back to x64
+            function resetSSLButtons() {
+                document.querySelectorAll('[data-option="ssl"]').forEach(btn => {
+                    btn.disabled = false;
+                });
+            }
 
             confirmDownloadBtn.addEventListener('click', () => {
                 const arch = selections.arch;
