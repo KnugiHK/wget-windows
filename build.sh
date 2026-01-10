@@ -167,6 +167,7 @@ elif [ "$BUILD_ARCH_TYPE" == "arm64" ]; then
   OPENSSL_FLAGS="no-asm"
   OPENSSL_LIB_DIR="lib64"
   OPENSSL_CROSS=""
+  OPENSSL_MAKE_OVERRIDE="RCFLAGS=-D__WIN32 -D__AARCH64"
   
   WGET_CFLAGS="-D_GNU_SOURCE -Wno-implicit-function-declaration"
   WGET_OVERRIDE="ac_cv_func_error=no ac_cv_func_strchrnul=no"
@@ -514,7 +515,7 @@ if [ ! -f "$INSTALL_PATH/$OPENSSL_LIB_DIR/libssl.a" ]; then
   no-tests \
   zlib \
   || abort "[openssl] configure failed"
- make -j $CORE || abort "[openssl] make failed"
+ make ${OPENSSL_MAKE_OVERRIDE:+"$OPENSSL_MAKE_OVERRIDE"} -j $CORE || abort "[openssl] make failed"
  make install_sw || abort "[openssl] make install_sw"
  cd ..
 fi
