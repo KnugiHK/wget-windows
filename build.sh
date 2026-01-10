@@ -8,7 +8,7 @@
 #   ./build.sh       (Builds both x86 and x64)
 #   ./build.sh x86   (Builds x86 only)
 #   ./build.sh x64   (Builds x64 only)
-
+#   ./build.sh arm64 (Builds ARM64 only)
 
 # -----------------------------------------------------------------------------
 # Version & URL Definitions (Centralized Management)
@@ -176,7 +176,7 @@ elif [ "$BUILD_ARCH_TYPE" == "arm64" ]; then
   GNUTLS_FLAGS="--disable-asm --disable-hardware-acceleration"
   
   EXE_SUFFIX="-arm64.exe"
-elif [ "$BUILD_ARCH_TYPE" == "disable_binfmt" ]; then
+elif [ "$BUILD_ARCH_TYPE" == "disable-binfmt" ]; then
   if [ "$(id -u)" -ne 0 ]; then
     echo "Please run as root to disable binfmt_misc."
     exit 1
