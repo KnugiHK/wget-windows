@@ -49,6 +49,13 @@ git clone https://github.com/KnugiHK/wget-on-windows && cd wget-on-windows
 ./build.sh arm64 # Builds arm64 only
 ```
 
+> [!TIP]
+> If you are seeing constant Windows popups while building for ARM64 on WSL, it's because Windows doesn't recognize the conftests files the build script is running.
+>
+> You can stop these interruptions by running: `./build.sh disable-binfmt`
+>
+> It tells WSL to stop asking Windows for help when it encounters a file it can't run. This "silences" the popups so the build can finish automatically without you having to click "OK" hundreds of times.
+
 ## Verifying Build Integrity
 
 To ensure that the binaries provided in the releases were built directly from this source code via GitHub Actions and have not been tampered with, GitHub Artifact Attestations is used. You can verify the authenticity of any `.exe` using the GitHub CLI.
