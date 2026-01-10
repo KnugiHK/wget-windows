@@ -366,6 +366,7 @@ if [ ! -f "$INSTALL_PATH"/lib/libgnutls.a ]; then
   --disable-doc \
   --disable-shared \
   --enable-static \
+  --without-zstd \
   || abort "[gnutls] configure failed"
   make -j $CORE || abort "[gnutls] make failed"
   make install || abort "[gnutls] make install"
