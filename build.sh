@@ -172,7 +172,10 @@ elif [ "$BUILD_ARCH_TYPE" == "arm64" ]; then
 
   # Disable ASM and hardware acceleration because GnuTLS does not 
   # provide AArch64 assembly in the MinGW COFF format (unlike x86_64).
-  GNUTLS_FLAGS="--disable-asm --disable-hardware-acceleration"
+  GNUTLS_FLAGS="--disable-hardware-acceleration "
+  # Fix for ARM64 static hang: Disable threads to prevent a deadlock between 
+  # GnuTLS global constructors and winpthreads during early CRT initialization.
+  GNUTLS_FLAGS+="--disable-threads gl_cv_func_pthread_mutex_timedlock_in_LIBMULTITHREAD=yes"
   
   EXE_SUFFIX="-arm64.exe"
 elif [ "$BUILD_ARCH_TYPE" == "disable-binfmt" ]; then
