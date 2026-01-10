@@ -18,7 +18,7 @@ permissions:
   attestations: write
 
 jobs:
-  # --- 64-bit Build Job ---
+  # --- x64 Build Job ---
   build-x64:
     name: Build x64
     runs-on: ubuntu-24.04
@@ -32,7 +32,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y mingw-w64 mingw-w64-tools gcc make m4 pkg-config automake gettext
 
-      - name: Build wget 64-bit
+      - name: Build wget x64
         run: |
           x86_64-w64-mingw32-gcc --version
           ./build.sh x64
@@ -55,7 +55,7 @@ jobs:
             build-wget/install/wget-gnutls/wget-gnutls-x64.exe
             build-wget/install/wget-openssl/wget-openssl-x64.exe
 
-  # --- 32-bit Build Job ---
+  # --- x86 Build Job ---
   build-x86:
     name: Build x86
     runs-on: ubuntu-24.04
@@ -67,7 +67,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y mingw-w64 mingw-w64-tools mingw-w64-i686-dev gcc make m4 pkg-config automake gettext
 
-      - name: Build wget 32-bit
+      - name: Build wget x86
         run: |
           i686-w64-mingw32-gcc --version
           ./build.sh x86
@@ -86,9 +86,40 @@ jobs:
           path: |
             build-wget-x86/install/wget-gnutls/wget-gnutls-x86.exe
             build-wget-x86/install/wget-openssl/wget-openssl-x86.exe
-   
-  test-windows:
-    name: Test Binaries on Windows
+
+  # --- arm64 Build Job ---
+  build-arm64:
+    name: Build arm64
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      
+      - name: Install prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mingw-w64 mingw-w64-tools mingw-w64-i686-dev gcc make m4 pkg-config automake gettext
+
+      - name: Build wget arm64
+        run: |
+          ./build.sh arm64
+
+      - name: Attest arm64 Binaries
+        uses: actions/attest-build-provenance@v3
+        with:
+          subject-path: |
+            build-wget-arm64/install/wget-gnutls/wget-gnutls-arm64.exe
+            build-wget-arm64/install/wget-openssl/wget-openssl-arm64.exe
+
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v6
+        with:
+          name: wget-arm64-binaries
+          path: |
+            build-wget-arm64/install/wget-gnutls/wget-gnutls-arm64.exe
+            build-wget-arm64/install/wget-openssl/wget-openssl-arm64.exe
+
+  test-windows-x86:
+    name: Test Binaries on Windows (x86-x64)
     needs: [build-x64, build-x86]
     runs-on: windows-latest
     env:
@@ -110,14 +141,41 @@ jobs:
       - name: Run Tests in Python
         shell: pwsh
         run: |
-          Get-ChildItem -Path ./test-bins -Filter *.exe -Recurse | Move-Item -Destination .
+          Get-ChildItem -Path ./test-bins -Filter -Exclude *arm64.exe -Recurse | Move-Item -Destination .
+          $executables = Get-ChildItem -Name *.exe
+          python wget_tests.py $executables
+
+  test-windows-arm64:
+    name: Test Binaries on Windows (arm64)
+    needs: [build-arm64]
+    runs-on: windows-latest
+    env:
+      WGET_VERSION: ${{ needs.build-x64.outputs.wget_version }}
+      PYTHONUTF8: 1
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.x'
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v6
+        with:
+          path: ./test-bins
+
+      - name: Run Tests in Python
+        shell: pwsh
+        run: |
+          Get-ChildItem -Path ./test-bins -Filter *arm64.exe -Recurse | Move-Item -Destination .
           $executables = Get-ChildItem -Name *.exe
           python wget_tests.py $executables
 
   # --- Release Job ---
   release:
     name: Create Release
-    needs: [build-x64, build-x86, test-windows]
+    needs: [build-x64, build-x86, build-arm64, test-windows-x86, test-windows-arm64]
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/v')
     permissions:
