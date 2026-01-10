@@ -52,6 +52,6 @@ Mkfile.old
 dkms.conf
 
 # Artifacts
-build-wget
+build-wget-x64
 build-wget-x86
 build-wget-dl

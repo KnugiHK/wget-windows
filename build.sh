@@ -120,7 +120,7 @@ if [ "$BUILD_ARCH_TYPE" == "x86" ]; then
   EXE_SUFFIX="-x86.exe"
 
 elif [ "$BUILD_ARCH_TYPE" == "x64" ]; then
-  WORK_DIR="build-wget"
+  WORK_DIR="build-wget-x64"
   mkdir -p "$WORK_DIR/install"
   export INSTALL_PATH=$ROOT_DIR/$WORK_DIR/install
   export WGET_GCC=x86_64-w64-mingw32-gcc

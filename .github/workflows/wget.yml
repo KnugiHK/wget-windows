@@ -44,16 +44,16 @@ jobs:
         uses: actions/attest-build-provenance@v3
         with:
           subject-path: |
-            build-wget/install/wget-gnutls/wget-gnutls-x64.exe
-            build-wget/install/wget-openssl/wget-openssl-x64.exe
+            build-wget-x64/install/wget-gnutls/wget-gnutls-x64.exe
+            build-wget-x64/install/wget-openssl/wget-openssl-x64.exe
 
       - name: Archive artifacts
         uses: actions/upload-artifact@v6
         with:
           name: wget-x64-binaries
           path: |
-            build-wget/install/wget-gnutls/wget-gnutls-x64.exe
-            build-wget/install/wget-openssl/wget-openssl-x64.exe
+            build-wget-x64/install/wget-gnutls/wget-gnutls-x64.exe
+            build-wget-x64/install/wget-openssl/wget-openssl-x64.exe
 
   # --- x86 Build Job ---
   build-x86:
