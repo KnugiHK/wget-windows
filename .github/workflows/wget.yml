@@ -9,6 +9,7 @@ on:
     paths-ignore:
       - 'README.md'
       - 'RELEASE.md'
+      - '.github/generate-website.js'
   workflow_dispatch:
 
 permissions:
