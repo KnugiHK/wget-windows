@@ -116,6 +116,14 @@ elif [ "$BUILD_ARCH_TYPE" == "x64" ]; then
   OPENSSL_CROSS="x86_64-w64-mingw32-"
   
   EXE_SUFFIX="-x64.exe"
+elif [ "$BUILD_ARCH_TYPE" == "disable_binfmt" ]; then
+  if [ "$(id -u)" -ne 0 ]; then
+    echo "Please run as root to disable binfmt_misc."
+    exit 1
+  fi
+  bash -c "echo 0 > /proc/sys/fs/binfmt_misc/status"
+  echo "binfmt_misc disabled!"
+  exit 0
 else
   echo "Unknown architechture"
   exit 1
