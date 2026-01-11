@@ -19,6 +19,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
       
       - name: Set up Node.js
         uses: actions/setup-node@v6
@@ -34,6 +36,7 @@ jobs:
           GH_REPO: ${{ github.repository }}
         run: |
           export LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "Unknown")
+          echo "Latest tag is $LATEST_TAG"
           node .github/generate-website.js
           echo 'wget.knugi.dev' > ./docs/CNAME
       
