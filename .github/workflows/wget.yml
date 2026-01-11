@@ -39,7 +39,9 @@ jobs:
           VERSION=$(grep -Po '(?<=wget-)\d+\.\d{2}\.\d+' build.sh | uniq)
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
           echo "Extracted: $VERSION"
-          cd build-wget-x64/install && zip -r ../../datafiles.zip etc share/locale
+          cp LICENSE build-wget-x64/install/
+          cd build-wget-x64/install
+          zip -r ../../datafiles.zip etc share/locale LICENSE
 
       - name: Attest x64 Binaries
         uses: actions/attest-build-provenance@v3
