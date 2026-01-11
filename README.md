@@ -30,11 +30,11 @@ The Windows version of Wget includes all features of Wget except for NLS (the mu
 
 GnuTLS version:
 
-`+cares +digest -gpgme +https +ipv6 +iri +large-file -metalink -nls +ntlm +opie +psl +ssl/gnutls`
+`+cares +digest -gpgme +https +ipv6 +iri +large-file -metalink +nls +ntlm +opie +psl +ssl/gnutls`
 
 OpenSSL version:
 
-`+cares +digest -gpgme +https +ipv6 +iri +large-file -metalink -nls +ntlm +opie +psl +ssl/openssl`
+`+cares +digest -gpgme +https +ipv6 +iri +large-file -metalink +nls +ntlm +opie +psl +ssl/openssl`
 
 ### Local Build
 
@@ -43,7 +43,7 @@ To build Wget for Windows on WSL 1 or 2 (Debian/Ubuntu), please follow these ste
 ```bash
 sudo apt-get install -y mingw-w64 mingw-w64-tools mingw-w64-i686-dev gcc make m4 pkg-config automake gettext
 git clone https://github.com/KnugiHK/wget-on-windows && cd wget-on-windows
-./build.sh # Builds both x86 and x64
+./build.sh # Builds both x86 and x64 (no arm64 by default)
 ./build.sh x64 # Builds x64 only
 ./build.sh x86 # Builds x86 only
 ./build.sh arm64 # Builds arm64 only
@@ -52,7 +52,7 @@ git clone https://github.com/KnugiHK/wget-on-windows && cd wget-on-windows
 > [!TIP]
 > If you are seeing constant Windows popups while building for ARM64 on WSL, it's because Windows doesn't recognize the conftests files the build script is running.
 >
-> You can stop these interruptions by running: `./build.sh disable-binfmt`
+> You can stop these interruptions by running: `sudo ./build.sh disable-binfmt`
 >
 > It tells WSL to stop asking Windows for help when it encounters a file it can't run. This "silences" the popups so the build can finish automatically without you having to click "OK" hundreds of times.
 
