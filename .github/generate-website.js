@@ -4,28 +4,9 @@ const markedAlert = require('marked-alert');
 const path = require('path');
 
 async function generateSite() {
-    let latestVersion = 'v1.25.0'; // Fallback version
-    try {
-        const response = await fetch(`https://api.github.com/repos/${process.env.GH_REPO}/releases/latest`, {
-            headers: {
-                "Authorization": `Bearer ${process.env.GH_TOKEN}`,
-                "Accept": "application/vnd.github.v3+json"
-            }
-        });
-
-        if (response.ok) {
-            const data = await response.json();
-            latestVersion = data.tag_name.replace(/^v/, "");
-            console.log(`Fetched latest version: ${latestVersion}`);
-        } else {
-            console.error(`Failed to fetch version: ${response.statusText}. Using fallback.`);
-        }
-    } catch (error) {
-        console.error('Error connecting to GitHub API:', error.message);
-    }
-
     fs.ensureDirSync('docs');
 
+    const latestVersion = process.env.LATEST_TAG.replace(/^v/, "") || 'unknown';
     const readmeContent = fs.readFileSync('README.md', 'utf8');
     const renderer = new marked.Renderer();
     const originalBlockquote = renderer.blockquote.bind(renderer);

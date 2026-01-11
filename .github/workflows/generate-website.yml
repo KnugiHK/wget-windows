@@ -33,6 +33,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
         run: |
+          export LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "Unknown")
           node .github/generate-website.js
           echo 'wget.knugi.dev' > ./docs/CNAME
       
