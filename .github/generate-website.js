@@ -530,7 +530,7 @@ async function generateSite() {
                         <div class="option-buttons">
                             <button class="option-btn selected" data-option="arch" data-value="x64">x64 (64-bit)</button>
                             <button class="option-btn" data-option="arch" data-value="x86">x86 (32-bit)</button>
-                            <button class="option-btn" data-option="arch" data-value="arm64">ARM64</button>
+                            <button class="option-btn" data-option="arch" data-value="arm64">ARM64 (WoA)</button>
                         </div>
                     </div>
 
