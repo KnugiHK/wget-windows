@@ -145,7 +145,7 @@ jobs:
           python-version: '3.x'
 
       - name: Download all artifacts
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           path: ./test-bins
 
@@ -171,7 +171,7 @@ jobs:
           python-version: '3.x'
 
       - name: Download all artifacts
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           path: ./test-bins
 
@@ -193,7 +193,7 @@ jobs:
       - uses: actions/checkout@v6
       
       - name: Download all artifacts
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           path: ./downloads
 
