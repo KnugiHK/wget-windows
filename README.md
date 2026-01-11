@@ -4,6 +4,9 @@ This is a command-line tool that can be used to retrieve files via the HTTP, HTT
 
 GNU Wget is a free software package that allows users to retrieve files through the most commonly used Internet protocols, including HTTP, HTTPS, FTP, and FTPS. As a non-interactive command-line tool, it can be easily integrated into scripts, cron jobs, and terminals.
 
+> [!TIP]
+> Binaries for Windows on ARM(64) are now available!
+
 ## How to use wget
 
 To learn how to use Wget, please refer to the official GNU Wget manual by clicking the link below.
