@@ -200,6 +200,8 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          artifacts: "./downloads/**/*.exe"
+          artifacts: |
+           ./downloads/**/*.exe
+           ./downloads/datafiles.zip
           bodyFile: "RELEASE.md"
           token: ${{ secrets.GITHUB_TOKEN }}
