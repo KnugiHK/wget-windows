@@ -63,7 +63,7 @@ jobs:
       - name: Archive artifacts
         uses: actions/upload-artifact@v6
         with:
-          name: datafiles-zip
+          name: datafiles
           path: datafiles.zip
 
   # --- x86 Build Job ---
@@ -203,6 +203,6 @@ jobs:
           allowUpdates: true
           artifacts: |
            ./downloads/**/*.exe
-           ./downloads/datafiles.zip
+           ./downloads/datafiles/datafiles.zip
           bodyFile: "RELEASE.md"
           token: ${{ secrets.GITHUB_TOKEN }}
