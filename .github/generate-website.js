@@ -4,7 +4,7 @@ const markedAlert = require('marked-alert');
 const path = require('path');
 
 async function generateSite() {
-    let latestVersion = 'v1.24.5';
+    let latestVersion = 'v1.25.0'; // Fallback version
     try {
         const response = await fetch(`https://api.github.com/repos/${process.env.GH_REPO}/releases/latest`, {
             headers: {
