@@ -15,7 +15,7 @@ To learn how to use Wget, please refer to the official GNU Wget manual by clicki
 
 ### Build Environment
 
-- **Native Windows Trust Store Support**: Wget has been built using GitHub Actions and cross-compiled with mingw64 on Ubuntu. It is completely safe to use and free from viruses.
+- **Clean Builds**: Wget has been built using GitHub Actions and cross-compiled with mingw64 on Ubuntu. It is completely safe to use and free from viruses.
 
 - **Statically Linked**: All the necessary libraries have been **statically linked**, so there is no need to use any third-party DLL.
 
